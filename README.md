@@ -24,3 +24,9 @@ To run the script, use the following command:
 ```bash
 bash ./install.sh
 ```
+
+```bash
+bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/oneline.sh)"
+```
+
+
