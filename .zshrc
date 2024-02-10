@@ -38,10 +38,10 @@ ZSH_THEME="robbyrussell"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="false"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
@@ -100,13 +100,19 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+
 eval "$(starship init zsh)"
+
 alias lzd='lazydocker'
-export PATH="/home/radityaharya/.bun/bin/bun:$PATH"
+export PATH="$HOME/.bun/bin/bun:$PATH"
 
 # bun completions
-[ -s "/home/radityaharya/.bun/_bun" ] && source "/home/radityaharya/.bun/_bun"
-
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 # bun
+
+# nvim
+alias nvim="~/.local/bin/nvim"
+
+
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
