@@ -83,6 +83,19 @@ install_tmux_plugin_manager() {
 install_bun() {
   package_install_confirmations "bun" || return 0
   echo -e "${YELLOW}Installing bun...${NC}"
+
+  if ! command_exists unzip; then
+    echo -e "${YELLOW}Installing unzip...${NC}"
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+      sudo apt-get install unzip
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+      brew install unzip
+    else
+      echo -e "${RED}Unsupported OS for this script${NC}"
+      exit 1
+    fi
+  fi
+
   curl -fsSL https://bun.sh/install | bash
 }
 
