@@ -106,6 +106,11 @@ install_bun() {
   curl -fsSL https://bun.sh/install | bash
 }
 
+install_brew() {
+  echo -e "${YELLOW}Installing Homebrew...${NC}"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
 command_exists() {
   which "$1" 1>/dev/null 2>&1
 }
@@ -135,6 +140,7 @@ echo -e "${YELLOW}- Oh My Zsh plugins (zsh-autosuggestions) ${NC}"
 echo -e "${YELLOW}- tmux${NC}"
 echo -e "${YELLOW}- tpm ${NC}"
 echo -e "${YELLOW}- bun (https://bun.sh/)${NC}"
+echo -e "${YELLOW}- Homebrew (https://brew.sh/)${NC}"
 
 echo -e "${RED}This script will overwrite your existing dotfiles located in your home directory.${NC}"
 echo -e "${RED}Please backup your existing dotfiles before running this script.${NC}"
@@ -173,6 +179,10 @@ fi
 
 if ! command_exists bun; then
   install_bun
+fi
+
+if ! command_exists brew; then
+  install_brew
 fi
 
 echo -e "${YELLOW}Installing Oh My Zsh plugins...${NC}"
