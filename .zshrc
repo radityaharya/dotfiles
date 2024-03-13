@@ -27,7 +27,6 @@ alias py='python3'
 
 # Sourced scripts
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-source <(ng completion script)
 eval "$(starship init zsh)"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(zoxide init zsh --cmd cd)"
