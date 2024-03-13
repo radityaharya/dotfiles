@@ -23,7 +23,7 @@ export DONT_PROMPT_WSL_INSTALL=true
 # Aliases
 alias lzd='lazydocker'
 alias vsc='code-insiders serve-web --host 127.0.0.1 --port 8888 --without-connection-token'
-
+alias py='python3'
 
 # Sourced scripts
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
