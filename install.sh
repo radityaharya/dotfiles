@@ -165,6 +165,7 @@ fi
 cd "$HOME/dotfiles"
 
 git submodule update --init --recursive
+git submodule update
 
 echo -e "${YELLOW}Updating package manager...${NC}"
 update_package_manager
