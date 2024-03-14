@@ -107,8 +107,16 @@ install_bun() {
 }
 
 install_brew() {
+  package_install_confirmations "Homebrew" || return 0
   echo -e "${YELLOW}Installing Homebrew...${NC}"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+install_zoxide() {
+  package_install_confirmations "zoxide" || return 0
+  echo -e "${YELLOW}Installing zoxide...${NC}"
+  curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  echo -e "${GREEN}zoxide installed. Add the following line to your .zshrc:${NC}"
 }
 
 command_exists() {
@@ -183,6 +191,10 @@ fi
 
 if ! command_exists brew; then
   install_brew
+fi
+
+if ! command_exists zoxide; then
+  install_zoxide
 fi
 
 echo -e "${YELLOW}Installing Oh My Zsh plugins...${NC}"

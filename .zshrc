@@ -15,9 +15,14 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH="$HOME/.bun/bin/bun:$PATH"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH=$PATH:/snap/bin
+
 export BUN_INSTALL="$HOME/.bun"
+
+# flyctl
 export FLYCTL_INSTALL="$HOME/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
+# Code disable wsl install prompt
 export DONT_PROMPT_WSL_INSTALL=true
 
 # Aliases
@@ -27,6 +32,6 @@ alias py='python3'
 
 # Sourced scripts
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-eval "$(starship init zsh)"
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-eval "$(zoxide init zsh --cmd cd)"
+[ -s "/usr/local/bin/starship" ] && eval "$(starship init zsh)"
+[ -s "/home/linuxbrew/.linuxbrew/bin/brew" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+[ -s "$HOME/.local/bin/zoxide" ] && eval "$(zoxide init zsh --cmd cd)"
