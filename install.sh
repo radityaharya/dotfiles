@@ -162,6 +162,8 @@ if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   exit 1
 fi
 
+cd "$HOME/dotfiles"
+
 git submodule update --init --recursive
 
 echo -e "${YELLOW}Updating package manager...${NC}"
