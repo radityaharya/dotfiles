@@ -162,6 +162,8 @@ if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   exit 1
 fi
 
+git submodule update --init --recursive
+
 echo -e "${YELLOW}Updating package manager...${NC}"
 update_package_manager
 
@@ -197,8 +199,8 @@ if ! command_exists zoxide; then
   install_zoxide
 fi
 
-echo -e "${YELLOW}Installing Oh My Zsh plugins...${NC}"
-install_oh_my_zsh_plugins
+# echo -e "${YELLOW}Installing Oh My Zsh plugins...${NC}"
+# install_oh_my_zsh_plugins
 
 echo -e "${YELLOW}Stowing dotfiles...${NC}"
 stow . || {

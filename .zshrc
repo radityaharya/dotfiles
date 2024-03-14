@@ -15,6 +15,8 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH="$HOME/.bun/bin/bun:$PATH"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH=$PATH:/snap/bin
+export QT_SCALE_FACTOR=2
+export GDK_SCALE=2
 
 export BUN_INSTALL="$HOME/.bun"
 
@@ -27,8 +29,13 @@ export DONT_PROMPT_WSL_INSTALL=true
 
 # Aliases
 alias lzd='lazydocker'
-alias vsc='code-insiders serve-web --host 127.0.0.1 --port 8888 --without-connection-token'
+alias vsc='code-insiders serve-web --host 127.0.0.1 --port 8888 --without-connection-token --log off --accept-server-license-terms'
 alias py='python3'
+
+# Functions
+dcu() {
+  docker context use $1
+}
 
 # Sourced scripts
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
