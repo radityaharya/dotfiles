@@ -6,5 +6,5 @@ if ! command -v git &> /dev/null; then
 fi
 git clone https://github.com/radityaharya/dotfiles ~/dotfiles
 echo "Dotfiles repository cloned successfully."
-cd ~/dotfiles
+cd "$HOME/dotfiles"
 bash install.sh
