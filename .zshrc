@@ -16,7 +16,7 @@ export PATH="$HOME/.bun/bin/bun:$PATH"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH=$PATH:/snap/bin
 export QT_SCALE_FACTOR=2
-export GDK_SCALE=2
+#export GDK_SCALE=2
 
 export BUN_INSTALL="$HOME/.bun"
 
@@ -38,7 +38,6 @@ dcu() {
 }
 
 # Sourced scripts
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 [ -s "/usr/local/bin/starship" ] && eval "$(starship init zsh)"
 [ -s "/home/linuxbrew/.linuxbrew/bin/brew" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 [ -s "$HOME/.local/bin/zoxide" ] && eval "$(zoxide init zsh --cmd cd)"
@@ -56,3 +55,16 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# ghce ghcs
+eval "$(gh copilot alias -- zsh)"
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH=/usr/lib/postgresql/16/bin:$PATH
+
+precmd () { echo -n "\x1b]1337;CurrentDir=$(pwd)\x07" }
