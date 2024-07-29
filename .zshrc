@@ -32,7 +32,6 @@ if ! command -v oh-my-posh &> /dev/null; then
 fi
 eval "$(~/.local/bin/oh-my-posh init zsh --config ~/dotfiles/.omp.toml)"
 
-
 # ==============================
 # Homebrew
 # ==============================
@@ -114,6 +113,14 @@ zinit wait lucid for \
 
 zinit ice wait"0" lucid
 zinit load Aloxaf/fzf-tab
+
+zinit ice as"command" from"gh-r" bpick"atuin-*.tar.gz" mv"atuin*/atuin -> atuin" \
+    atclone"./atuin init zsh > init.zsh; ./atuin gen-completions --shell zsh > _atuin" \
+    atpull"%atclone" src"init.zsh"
+zinit light atuinsh/atuin
+
+zinit load atuinsh/atuin
+
 
 
 # ==============================
