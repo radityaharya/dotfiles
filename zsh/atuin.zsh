@@ -3,6 +3,8 @@ zinit ice as"command" from"gh-r" bpick"atuin-*.tar.gz" mv"atuin*/atuin -> atuin"
     atpull"%atclone" src"init.zsh"
 zinit light atuinsh/atuin
 
-if ! atuin status | grep -q "Username"; then
+if atuin status | grep -q "Username"; then
+    eval "$(atuin dotfiles var list)"
+else
     echo "Please login to Atuin by running 'atuin login'"
 fi
