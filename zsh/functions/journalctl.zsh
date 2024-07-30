@@ -1,20 +1,21 @@
-sjctl() {
+jctl() {
   if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: sjctl [SERVICE_NAME]"
+    echo "Usage: jctl [SERVICE_NAME]"
     echo "Monitor systemd logs for the specified service."
-    echo "Example: sjctl nginx"
+    echo "Example: jctl nginx"
     return 0
   fi
 
   if [[ -z "$1" ]]; then
     echo "Error: No service name provided."
-    echo "Usage: sjctl [SERVICE_NAME]"
+    echo "Usage: jctl [SERVICE_NAME]"
     return 1
   fi
 
-  sudo journalctl -fu "$@"
+  sudo journalctl -fu "$1"
 }
-_sjctl() {
+
+_jctl() {
   local -a services
   services=($(systemctl list-units --type=service --no-pager --no-legend | awk '{print $1}'))
 
@@ -30,4 +31,4 @@ _sjctl() {
   esac
 }
 
-compdef _sjctl sjctl
+compdef _jctl jctl
