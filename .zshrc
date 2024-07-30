@@ -58,8 +58,8 @@ case ":$PATH:" in
 esac
 
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/fzf --zsh)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/zoxide init --cmd cd zsh)"
 [ -s "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 # AiChat
