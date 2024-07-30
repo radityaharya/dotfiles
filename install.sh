@@ -5,14 +5,13 @@ link_dotfiles() {
   mkdir -p "$backup_dir"
 
   for file in ~/dotfiles/.*; do
-    if [[ -f "$file" && "${file##*/}" != ".git" && "${file##*/}" != "." && "${file##*/}" != ".." ]]; then
-      local target_file="$HOME/${file##*/}"
-      if [[ -e "$target_file" ]]; then
-        mv "$target_file" "$backup_dir/"
-        echo "Backed up existing ${file##*/} to $backup_dir"
-      fi
+    local filename="${file##*/}"
+    local target_file="$HOME/$filename"
+
+    if [[ -f "$file" && "$filename" == .* && "$filename" != ".git" && "$filename" != "." && "$filename" != ".." ]]; then
+      [[ -e "$target_file" ]] && mv "$target_file" "$backup_dir/" && echo "Backed up existing $filename to $backup_dir"
       ln -sf "$file" "$target_file"
-      echo "Linked ${file##*/} to home directory"
+      echo "Linked $filename to home directory"
     fi
   done
 
