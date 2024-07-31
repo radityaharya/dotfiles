@@ -27,7 +27,7 @@ if ! command -v eza &> /dev/null; then
   brew install eza
 fi
 
-if ! command -v batcat &> /dev/null; then
+if ! command -v bat &> /dev/null; then
   echo "bat not found. Installing..."
   brew install bat
 fi
