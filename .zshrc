@@ -51,6 +51,11 @@ for file in ~/dotfiles/zsh/functions/*.zsh; do
   source $file
 done
 
+# Completions
+for file in ~/dotfiles/zsh/completions/*.zsh; do
+  source $file
+done
+
 # Sourced Scripts
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;

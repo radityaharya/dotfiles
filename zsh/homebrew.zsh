@@ -22,9 +22,9 @@ if ! command -v zoxide &> /dev/null; then
   brew install zoxide
 fi
 
-if ! command -v exa &> /dev/null; then
+if ! command -v eza &> /dev/null; then
   echo "exa not found. Installing..."
-  brew install exa
+  brew install eza
 fi
 
 if ! command -v batcat &> /dev/null; then
