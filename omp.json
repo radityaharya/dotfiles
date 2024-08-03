@@ -67,7 +67,7 @@
           ],
           "properties": {
             "folder_separator_icon": "/",
-            "home_icon": "$HOME",
+            "home_icon": "~",
             "style": "agnoster_full",
             "mixed_threshold": 5,
             "max_depth": 2
@@ -104,7 +104,7 @@
               "Added": "<p:git-added>+%d</>",
               "Unmerged": "<p:diag-info>X%d</> ",
               "Deleted": "<p:git-removed>-%d</> ",
-              "Modified": "<p:git-changed>$HOME%d </> ",
+              "Modified": "<p:git-changed>~%d </> ",
               "Untracked": "<p:diag-warning>?%d</> "
             }
           },
