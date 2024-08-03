@@ -15,7 +15,7 @@ _cli_zsh_autocomplete() {
         FLAGS=($(echo "$help_output" | awk '
             /FLAGS/ { f = 1; next }
             /EXAMPLES/ { f = 0 }
-            f && $1 ~ /^--/ {
+            f && $1 $HOME /^--/ {
                 flag = $1
                 sub(/,.*$/, "", flag)  # Remove everything after the comma
                 print flag ":" substr($0, index($0,$2))
@@ -72,7 +72,7 @@ _cli_complete_status() {
     flags_with_descriptions=$(echo "$help_output" | awk '
         /FLAGS/ { f = 1; next }
         /EXAMPLES/ { f = 0 }
-        f && $1 ~ /^--/ {
+        f && $1 $HOME /^--/ {
             flag = $1
             sub(/,.*$/, "", flag)  # Remove everything after the comma
             print flag ":" substr($0, index($0,$2))
@@ -98,7 +98,7 @@ _cli_complete_subcommand() {
     flags_with_descriptions=$(echo "$help_output" | awk '
         /FLAGS/ { f = 1; next }
         /EXAMPLES/ { f = 0 }
-        f && $1 ~ /^--/ {
+        f && $1 $HOME /^--/ {
             flag = $1
             sub(/,.*$/, "", flag)  # Remove everything after the comma
             print flag ":" substr($0, index($0,$2))

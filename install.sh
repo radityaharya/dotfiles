@@ -4,7 +4,7 @@ link_dotfiles() {
   local backup_dir="$HOME/dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
   mkdir -p "$backup_dir"
 
-  for file in ~/dotfiles/.*; do
+  for file in $HOME/dotfiles/.*; do
     local filename="${file##*/}"
     local target_file="$HOME/$filename"
 
@@ -35,7 +35,7 @@ install_if_not_present zsh
 install_if_not_present git
 
 if [ ! -d "$HOME/dotfiles" ]; then
-  git clone https://github.com/radityaharya/dotfiles ~/dotfiles
+  git clone https://github.com/radityaharya/dotfiles $HOME/dotfiles
   echo "Dotfiles repository cloned successfully."
 else
   echo "Dotfiles repository already exists."
