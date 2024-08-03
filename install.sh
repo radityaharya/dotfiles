@@ -8,8 +8,8 @@ link_dotfiles() {
     local filename="${file##*/}"
     local target_file="$HOME/$filename"
 
-    if [[ -f "$file" && "$filename" == .* && "$filename" != ".git" && "$filename" != "." && "$filename" != ".." ]]; then
-      [[ -e "$target_file" ]] && mv "$target_file" "$backup_dir/" && echo "Backed up existing $filename to $backup_dir"
+    if [ -f "$file" ] && [ "$filename" != ".git" ] && [ "$filename" != "." ] && [ "$filename" != ".." ]; then
+      [ -e "$target_file" ] && mv "$target_file" "$backup_dir/" && echo "Backed up existing $filename to $backup_dir"
       ln -sf "$file" "$target_file"
       echo "Linked $filename to home directory"
     fi
@@ -34,7 +34,7 @@ install_if_not_present zsh
 
 install_if_not_present git
 
-if [[ ! -d "$HOME/dotfiles" ]]; then
+if [ ! -d "$HOME/dotfiles" ]; then
   git clone https://github.com/radityaharya/dotfiles ~/dotfiles
   echo "Dotfiles repository cloned successfully."
 else
@@ -43,7 +43,7 @@ fi
 
 link_dotfiles
 
-if [[ $SHELL != $(which zsh) ]]; then
+if [ "$SHELL" != "$(which zsh)" ]; then
   chsh -s $(which zsh)
   echo "Default shell changed to Zsh. Please restart your terminal to use Zsh."
   exit 1

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 2,
+  "final_space": true,
+  "shell_integration": true,
+  "pwd": "osc7",
+  "console_title_template": "{{ .Shell }} in {{ .Folder }}",
+  "palette": {
+    "black": "#16161D",
+    "red": "#C34043",
+    "green": "#76946A",
+    "yellow": "#C0A36E",
+    "blue": "#7E9CD8",
+    "magenta": "#957FB8",
+    "cyan": "#6A9589",
+    "white": "#C8C093",
+    "bright-black": "#727169",
+    "bright-red": "#E82424",
+    "bright-green": "#98BB6C",
+    "bright-yellow": "#E6C384",
+    "bright-blue": "#7FB4CA",
+    "bright-magenta": "#938AA9",
+    "bright-cyan": "#7AA89F",
+    "bright-white": "#DCD7BA",
+    "git-added": "p:green",
+    "git-removed": "p:red",
+    "git-changed": "#DCA561",
+    "diag-ok": "p:bright-green",
+    "diag-error": "p:bright-red",
+    "diag-warning": "#FF9E3B",
+    "diag-info": "#658594",
+    "diag-hint": "p:cyan",
+    "special": "p:bright-magenta",
+    "none": "transparent"
+  },
+  "blocks": [
+    {
+      "type": "prompt",
+      "newline": false,
+      "alignment": "left",
+      "overflow": "hide",
+      "segments": [
+        {
+          "type": "root",
+          "style": "plain",
+          "foreground": "p:diag-warning",
+          "background": "p:none",
+          "template": "󱐋"
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "foreground_templates": [
+            "{{ if .Root }}p:red{{ else }}p:magenta{{ end }}"
+          ],
+          "background": "p:none",
+          "template": "{{ if .SSHSession }}{{ .UserName }}@{{ .HostName }}{{ end }}"
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "p:blue",
+          "background": "p:none",
+          "templates": [
+            "{{ if not .Writable }}<p:yellow>{{ else }}{{ end }}",
+            " {{ path .Path .Location }}</>"
+          ],
+          "properties": {
+            "folder_separator_icon": "/",
+            "home_icon": "~",
+            "style": "agnoster_full",
+            "mixed_threshold": 5,
+            "max_depth": 2
+          }
+        },
+        {
+          "type": "project",
+          "style": "plain",
+          "foreground_templates": [
+            "{{ if .Type }}",
+            "{{ if eq .Type \"node\" }}#5c8763{{ end }}",
+            "{{ if eq .Type \"cargo\" }}#b74f0e{{ end }}",
+            "{{ if eq .Type \"php\" }}#777bb3{{ end }}",
+            "{{ if eq .Type \"python\" }}#3572a5{{ end }}",
+            "{{ if eq .Type \"go\" }}#00add8{{ end }}",
+            "{{ else }}p:fg-dim{{ end }}"
+          ],
+          "background": "p:none",
+          "templates": [
+            "{{ if .Version }} [{{ .Version }}{{ if .Name }} {{ .Name }}{{ end }}]{{ end }}"
+          ],
+          "properties": {
+            "always_enabled": true
+          }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "properties": {
+            "fetch_status": true,
+            "fetch_stash_count": true,
+            "branch_icon": " ",
+            "status_formats": {
+              "Added": "<p:git-added>+%d</>",
+              "Unmerged": "<p:diag-info>X%d</> ",
+              "Deleted": "<p:git-removed>-%d</> ",
+              "Modified": "<p:git-changed>~%d </> ",
+              "Untracked": "<p:diag-warning>?%d</> "
+            }
+          },
+          "templates": [
+            " <p:special>{{ .HEAD }}</>",
+            "{{ if or (gt .Ahead 0) (gt .Behind 0) }} <p:bright-cyan>{{ .BranchStatus }}</>{{ end }}",
+            "{{ if .Working.Changed }} {{ .Working.String }}{{ end }}",
+            "{{ if or (and .Working.Changed .Staging.Changed) (gt .StashCount 0) }}| {{ end }}",
+            "{{ if (gt .Staging.Added 0) }}{{ .Staging.String }}{{ end }}",
+            "{{ if gt .StashCount 0 }}<p:blue>*{{ .StashCount }}</>{{ end }}"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "executiontime",
+          "style": "plain",
+          "foreground": "p:bright-black",
+          "template": " [{{ .FormattedMs }}]",
+          "properties": {
+            "threshold": 500,
+            "style": "austin",
+            "always_enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:bright-white",
+          "background": "p:none",
+          "template": "❯"
+        }
+      ]
+    }
+  ],
+  "transient_prompt": {
+    "foreground_templates": [
+      "{{if gt .Code 0}}p:red{{end}}",
+      "{{if eq .Code 0}}p:magenta{{end}}"
+    ],
+    "background": "p:none",
+    "template": "❯ "
+  }
+}

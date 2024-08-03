@@ -11,7 +11,7 @@ if [ -f "$HOME/.env" ]; then
     export $(cat $HOME/.env | xargs)
 fi
 
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:"$HOME/.bun/bin/bun":"$BUN_INSTALL/bin":"$FLYCTL_INSTALL/bin":$PATH:/snap/bin:/usr/lib/postgresql/16/bin:/home/linuxbrew/.linuxbrew/
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:"$HOME/.bun/bin/bun":"$BUN_INSTALL/bin":"$FLYCTL_INSTALL/bin":$PATH:/snap/bin:/usr/lib/postgresql/16/bin:/home/linuxbrew/.linuxbrew/:$HOME/go/bin
 
 if [ ! -d "$HOME/dotfiles" ]; then
   echo "Dotfiles repository not found. Cloning..."
@@ -25,7 +25,7 @@ fi
 source ~/dotfiles/zsh/homebrew.zsh
 
 # Oh-My-Posh
-eval "$(/home/linuxbrew/.linuxbrew/bin/oh-my-posh init zsh --config ~/dotfiles/.omp.toml)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/oh-my-posh init zsh --config ~/dotfiles/omp.json)"
 
 # Tmux Plugin Manager
 source ~/dotfiles/zsh/tpm.zsh
