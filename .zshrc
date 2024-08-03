@@ -11,6 +11,10 @@ if [ -f "$HOME/.env" ]; then
     export $(cat $HOME/.env | xargs)
 fi
 
+if [ -f "/usr/bin/tailscale" ]; then
+    export TAILSCALE_IP=$(tailscale ip -4)
+fi
+
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:"$HOME/.bun/bin/bun":"$BUN_INSTALL/bin":"$FLYCTL_INSTALL/bin":$PATH:/snap/bin:/usr/lib/postgresql/16/bin:/home/linuxbrew/.linuxbrew/:$HOME/go/bin
 
 if [ ! -d "$HOME/dotfiles" ]; then

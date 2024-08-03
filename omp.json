@@ -45,7 +45,7 @@
           "style": "plain",
           "foreground": "p:diag-warning",
           "background": "p:none",
-          "template": "󱐋"
+          "template": ""
         },
         {
           "type": "session",
@@ -54,7 +54,7 @@
             "{{ if .Root }}p:red{{ else }}p:magenta{{ end }}"
           ],
           "background": "p:none",
-          "template": "{{ if .SSHSession }}{{ .UserName }}@{{ .HostName }}{{ end }}"
+          "template": " {{ if .Env.TAILSCALE_IP }}{{ .Env.TAILSCALE_IP }}{{ else }}{{ .HostName }}{{ end }}"
         },
         {
           "type": "path",
