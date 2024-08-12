@@ -1,4 +1,4 @@
--e -e -e -e -e # dotfiles
+# dotfiles
 
 This repository contains my personal dotfiles.
 
@@ -38,4 +38,3 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
 6 directories, 21 files
 ```
 ---
-
