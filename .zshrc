@@ -1,17 +1,22 @@
-# Environment Variables
+set -a
+source $HOME/.env
+set +a
+
 # export QT_SCALE_FACTOR=2
 export DONT_PROMPT_WSL_INSTALL=true
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
+export GPG_TTY=$(tty)
 export BUN_INSTALL="$HOME/.bun"
 export FLYCTL_INSTALL="$HOME/.fly"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 
 if [ -f "$HOME/.env" ]; then
-  export $(cat $HOME/.env | xargs)
+  set -a
+  source $HOME/.env
+  set +a
 fi
 
-if [ -f "/usr/bin/tailscale" ]; then
+if [ -f "/usr/bin/tailscale" ] && [ "$(pgrep tailscaled)" ]; then
   export TAILSCALE_IP=$(tailscale ip -4)
 fi
 
@@ -46,6 +51,7 @@ source $HOME/dotfiles/zsh/keybindings.zsh
 # Configs
 source $HOME/dotfiles/zsh/config/history.zsh
 source $HOME/dotfiles/zsh/config/zstyle.zsh
+source $HOME/dotfiles/zsh/config/autosuggestions.zsh
 
 # Aliases
 source $HOME/dotfiles/zsh/aliases.zsh
@@ -73,3 +79,6 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/zoxide init --cmd cd zsh)"
 
 # AiChat
 source $HOME/dotfiles/zsh/aichat.zsh
+
+# bun completions
+[ -s "/home/radityaharya/.bun/_bun" ] && source "/home/radityaharya/.bun/_bun"

@@ -23,7 +23,7 @@ if ! command -v zoxide &> /dev/null; then
 fi
 
 if ! command -v eza &> /dev/null; then
-  echo "exa not found. Installing..."
+  echo "eza not found. Installing..."
   brew install eza
 fi
 
@@ -35,4 +35,9 @@ fi
 if ! command -v aichat &> /dev/null; then
   echo "aichat not found. Installing..."
   brew install aichat
+fi
+
+if ! command -v glow &> /dev/null; then
+  echo "glow not found. Installing..."
+  brew install glow
 fi
