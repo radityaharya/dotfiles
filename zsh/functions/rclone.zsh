@@ -1,5 +1,5 @@
 rc-mount(){
-  rclone mount $1: $2 --allow-other -vvv &
+  sudo rclone mount $1: $2 --allow-other -vvv &
   RCLONE_PID=$!
   trap "fusermount -u $2; kill $RCLONE_PID" EXIT
   wait $RCLONE_PID

@@ -1,0 +1,137 @@
+# Package managers and build tools
+.bun/
+node_modules/
+.cache/
+/pipx/
+.npm/
+.yarn/
+.pnpm/
+
+# System temporary directories
+/tmp/
+/var/tmp/
+/swapfile
+
+# Mount points (usually external drives)
+/mnt/*
+/media/*
+
+# Filesystem recovery area
+/lost+found
+
+# System logs (often large and can be regenerated)
+/var/log/*
+
+# Browser and application caches
+.cache/
+.local
+google-chrome/
+.mozilla/
+.opera/
+.safari/
+
+# Thumbnail caches
+~/.cache/thumbnails/
+
+# Common editor backup/temporary files
+*~
+*.swp
+*.bak
+*.swo
+
+# Next.js build output
+.next
+
+# Python compiled files and cache
+*.py[co]
+__pycache__/
+~/.cache/pip
+~/.ipython/
+
+# Node.js package caches
+~/.npm/_cacache
+~/.yarn/cache/
+~/.pnpm/store/
+
+# Code editors and IDEs
+.vscode/
+.vscode-insiders/
+.vscode-server/
+.vscode-server-insiders/
+.intellij/
+.eclipse/
+.netbeans/
+
+# Shell and terminal configurations
+.zcompdump
+.zsh_history
+.zshrc
+.bash_history
+.bashrc
+
+# Other application data
+.dotnet/
+.mshell/
+.pki/
+.tmux/
+.vim/
+.waveterm/
+.gnupg/
+
+# Downloaded files
+Downloads/
+
+# Release and build artifacts
+release/
+release.tar.gz
+
+# Snap packages
+snap/
+
+# Virtual machine and container data
+.vmware/
+.virtualbox/
+.docker/
+.kubernetes/
+
+# Music and video libraries
+Music/
+Videos/
+
+# Trash and recycling bins
+.Trash/
+.Trash-1000/
+.recycle/
+
+# Other miscellaneous files
+.fuse_hidden*
+.directory
+
+# Python cache and data directories
+~/.python-eggs/
+~/.ipython/profile_default/
+~/.jupyter/
+
+# Node.js and pnpm cache directories
+~/.npm/_logs/
+~/.yarn/cache/
+~/.pnpm/store/
+
+# Ruby and gem cache directories
+~/.gem/
+~/.rbenv/
+
+# Java and Maven cache directories
+~/.m2/
+~/.cpan/
+
+# Other cache directories
+~/.cache/
+~/.local/share/cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+.python-venv/
+.python-env/

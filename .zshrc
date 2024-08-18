@@ -51,7 +51,7 @@ source $HOME/dotfiles/zsh/keybindings.zsh
 # Configs
 source $HOME/dotfiles/zsh/config/history.zsh
 source $HOME/dotfiles/zsh/config/zstyle.zsh
-source $HOME/dotfiles/zsh/config/autosuggestions.zsh
+# source $HOME/dotfiles/zsh/config/autosuggestions.zsh
 
 # Aliases
 source $HOME/dotfiles/zsh/aliases.zsh
