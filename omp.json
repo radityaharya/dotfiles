@@ -4,7 +4,7 @@
   "final_space": true,
   "shell_integration": true,
   "pwd": "osc7",
-  "console_title_template": "[{{ .HostName }}] {{ .Shell }} in {{ .Folder }}",
+  "console_title_template": "[{{ .HostName }}] {{ .Folder }}",
   "palette": {
     "black": "#16161D",
     "red": "#C34043",
@@ -123,6 +123,16 @@
       "type": "prompt",
       "alignment": "right",
       "segments": [
+        {
+          "properties": {
+            "display_mode": "environment",
+            "fetch_virtual_env": true,
+            "home_enabled": true
+          },
+          "template": "\ue235 {{ if .Venv }}({{ .Venv }}){{ end }} ",
+          "style": "plain",
+          "type": "python"
+        },
         {
           "type": "executiontime",
           "style": "plain",
