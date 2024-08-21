@@ -9,8 +9,21 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
 ```
 .
 ├── README.md
+├── config
+│   ├── atuin
+│   │   └── config.toml
+│   └── nvim
+│       ├── LICENSE
+│       ├── init.lua
+│       ├── lazy-lock.json
+│       ├── lazyvim.json
+│       ├── lua
+│       └── stylua.toml
 ├── install.sh
 ├── omp.json
+├── restic
+│   ├── backup.sh
+│   └── restic_exclude.txt
 ├── zed
 │   └── settings.json
 └── zsh
@@ -18,16 +31,18 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
     ├── aliases.zsh
     ├── atuin.zsh
     ├── completions
+    │   ├── restic.zsh
     │   └── tailscale.zsh
     ├── config
-    │   ├── autosuggestions.zsh
     │   ├── history.zsh
     │   └── zstyle.zsh
     ├── functions
     │   ├── docker-compose.zsh
     │   ├── docker.zsh
     │   ├── gcloud.zsh
+    │   ├── interpreter.zsh
     │   ├── journalctl.zsh
+    │   ├── python.zsh
     │   ├── rclone.zsh
     │   └── tmux.zsh
     ├── homebrew.zsh
@@ -35,6 +50,6 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
     ├── tpm.zsh
     └── zinit.zsh
 
-6 directories, 21 files
+11 directories, 31 files
 ```
 ---
