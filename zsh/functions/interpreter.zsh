@@ -1,6 +1,4 @@
-# Define the function with default parameters
 function oi() {
-  # Set default values
   local api_base="${OPENAI_BASE_URL}"
   local api_key="${OPENAI_API_KEY}"
   local model="command-r-plus"
@@ -8,13 +6,11 @@ function oi() {
   local extra_params=()
   local flags=()
 
-  # Check if required environment variables are set
   if [ -z "$api_base" ] || [ -z "$api_key" ]; then
     echo "Error: OPENAI_BASE_URL and OPENAI_API_KEY must be set."
     return 1
   fi
 
-  # Parse the arguments
   while [[ "$#" -gt 0 ]]; do
     case $1 in
       -ab|--api_base) api_base="$2"; shift ;;
@@ -58,25 +54,22 @@ function oi() {
       --version) flags+=("--version") ;;
       --contribute_conversation) flags+=("--contribute_conversation") ;;
       -pl|--plain) flags+=("--plain") ;;
-      *) extra_params+=("$1") ;;  # Collect unknown parameters
+      *) extra_params+=("$1") ;; 
     esac
     shift
   done
 
-  # Construct and run the command
   interpreter --api_base "$api_base" --api_key "$api_key" --model "$model" --context_window "$context_window" \
     "${extra_params[@]}" \
     "${flags[@]}"
 }
 
-# Function to fetch models from OpenAI API
 function fetch_openai_models() {
   local api_key="$OPENAI_API_KEY"
   local api_base="$OPENAI_BASE_URL"
   curl -s -H "Authorization: Bearer $api_key" "$api_base/models" | jq -r '.data[].id'
 }
 
-# Zsh completion function for oi command
 function _oi_completion() {
   local curcontext="$curcontext" state line
   typeset -A opt_args
@@ -134,5 +127,4 @@ function _oi_completion() {
   esac
 }
 
-# Register the completion function
 compdef _oi_completion oi

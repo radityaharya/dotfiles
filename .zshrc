@@ -56,6 +56,9 @@ source $HOME/dotfiles/zsh/config/zstyle.zsh
 # Aliases
 source $HOME/dotfiles/zsh/aliases.zsh
 
+# Infisical
+source $HOME/dotfiles/zsh/infisical.zsh
+
 # Functions
 for file in $HOME/dotfiles/zsh/functions/*.zsh; do
   source $file

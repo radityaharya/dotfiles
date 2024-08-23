@@ -13,7 +13,6 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
 │   ├── atuin
 │   │   └── config.toml
 │   └── nvim
-│       ├── LICENSE
 │       ├── init.lua
 │       ├── lazy-lock.json
 │       ├── lazyvim.json
@@ -24,6 +23,8 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
 ├── restic
 │   ├── backup.sh
 │   └── restic_exclude.txt
+├── vscode
+│   └── keybindings.json
 ├── zed
 │   └── settings.json
 └── zsh
@@ -46,10 +47,11 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
     │   ├── rclone.zsh
     │   └── tmux.zsh
     ├── homebrew.zsh
+    ├── infisical.zsh
     ├── keybindings.zsh
     ├── tpm.zsh
     └── zinit.zsh
 
-11 directories, 31 files
+12 directories, 32 files
 ```
 ---
