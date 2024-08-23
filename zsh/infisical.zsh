@@ -6,28 +6,18 @@ TOKEN_TTL_DAYS=25
 prompt_for_input() {
   local var_name=$1
   local prompt_message=$2
-  local input_value=""
 
-  echo -n "$prompt_message: "
-  stty -echo
-  trap 'stty echo' EXIT
-  while IFS= read -r -s -n 1 char; do
-    if [[ -z $char ]]; then
-      break
-    elif [[ $char == $'\177' ]]; then
-      if [[ -n $input_value ]]; then
-        input_value=${input_value%?}
-        echo -ne "\b \b"
-      fi
-    else
-      input_value+=$char
-      echo -n '*'
-    fi
-  done
-  stty echo
-  trap - EXIT
-  echo
-  export "$var_name"="$input_value"
+  if command -v systemd-ask-password &>/dev/null; then
+    local input=$(systemd-ask-password "$prompt_message")
+    eval "$var_name='$input'"
+  else
+    echo -n "$prompt_message (input is hidden): "
+    stty -echo
+    read -r input
+    stty echo
+    echo
+    eval "$var_name='$input'"
+  fi
 }
 
 read_env_file() {
@@ -35,7 +25,8 @@ read_env_file() {
   [[ -f "$file" ]] || return 1
 
   while IFS='=' read -r key value; do
-    [[ -n $key && -n $value ]] && export "$key"="$value"
+    [[ $key =~ ^#.*$ || -z $key || -z $value ]] && continue
+    export "$key"="$value"
   done < "$file"
 }
 
@@ -61,7 +52,7 @@ is_token_expired() {
   local token_expiry
 
   current_date=$(date +%s)
-  token_expiry=$(date -d "$INFISICAL_TOKEN_EXPIRY" +%s)
+  token_expiry=$(date -d "$INFISICAL_TOKEN_EXPIRY" +%s 2>/dev/null || date -jf "%Y-%m-%d %H:%M:%S" "$INFISICAL_TOKEN_EXPIRY" +%s 2>/dev/null)
 
   [[ $current_date -ge $token_expiry ]]
 }
@@ -92,9 +83,26 @@ main() {
 
   read_env_file "$ENV_FILE"
 
-  check_and_prompt_var "INFISICAL_CLIENT_ID" "Enter INFISICAL_CLIENT_ID (input is hidden)"
-  check_and_prompt_var "INFISICAL_CLIENT_SECRET" "Enter INFISICAL_CLIENT_SECRET (input is hidden)"
-  check_and_prompt_var "INFISICAL_PROJECT_ID" "Enter INFISICAL_PROJECT_ID"
+  # Define colorful output
+  RED='\033[0;31m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  BOLD='\033[1m'
+  UNDERLINE='\033[4m'
+  MUTED='\033[0;37m'
+  DARK_GRAY='\033[1;30m'
+  LIGHT_FONT='\033[2m'
+  NC='\033[0m' # No Color
+
+  # Check if any of the required variables are not set
+  if [[ -z "$INFISICAL_CLIENT_ID" || -z "$INFISICAL_CLIENT_SECRET" || -z "$INFISICAL_PROJECT_ID" ]]; then
+    echo -e "${YELLOW}${BOLD}${UNDERLINE} Infiscal Credentials${NC}"
+    echo -e "${LIGHT_FONT}${DARK_GRAY}For more information, visit: https://infisical.com/docs/documentation/platform/identities/machine-identities${NC}"
+  fi
+
+  check_and_prompt_var "INFISICAL_CLIENT_ID" "INFISICAL_CLIENT_ID:"
+  check_and_prompt_var "INFISICAL_CLIENT_SECRET" "INFISICAL_CLIENT_SECRET:"
+  check_and_prompt_var "INFISICAL_PROJECT_ID" "INFISICAL_PROJECT_ID:"
 
   if [[ -z "$INFISICAL_TOKEN" || -z "$INFISICAL_TOKEN_EXPIRY" || $(is_token_expired) == 1 ]]; then
     INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id="$INFISICAL_CLIENT_ID" --client-secret="$INFISICAL_CLIENT_SECRET" --silent --plain)
@@ -104,7 +112,7 @@ main() {
       return 1
     fi
 
-    INFISICAL_TOKEN_EXPIRY=$(date -d "+${TOKEN_TTL_DAYS} days" +"%Y-%m-%d %H:%M:%S")
+    INFISICAL_TOKEN_EXPIRY=$(date -d "+${TOKEN_TTL_DAYS} days" +"%Y-%m-%d %H:%M:%S" 2>/dev/null || date -v+${TOKEN_TTL_DAYS}d +"%Y-%m-%d %H:%M:%S")
     
     update_env_file "INFISICAL_TOKEN" "$INFISICAL_TOKEN"
     update_env_file "INFISICAL_TOKEN_EXPIRY" "$INFISICAL_TOKEN_EXPIRY"
