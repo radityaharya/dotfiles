@@ -88,6 +88,8 @@ unset_sensitive_vars() {
 main() {
   install_infisical_cli || return 1
 
+  [[ -f "$ENV_FILE" ]] || touch "$ENV_FILE"
+
   read_env_file "$ENV_FILE"
 
   check_and_prompt_var "INFISICAL_CLIENT_ID" "Enter INFISICAL_CLIENT_ID (input is hidden)"
