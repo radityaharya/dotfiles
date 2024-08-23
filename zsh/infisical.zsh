@@ -66,6 +66,8 @@ update_env_file() {
   else
     echo "$key=$value" >> "$ENV_FILE"
   fi
+
+  chmod 600 "$ENV_FILE"
 }
 
 unset_sensitive_vars() {
@@ -83,7 +85,6 @@ main() {
 
   read_env_file "$ENV_FILE"
 
-  # Define colorful output
   RED='\033[0;31m'
   GREEN='\033[0;32m'
   YELLOW='\033[1;33m'
@@ -94,7 +95,6 @@ main() {
   LIGHT_FONT='\033[2m'
   NC='\033[0m' # No Color
 
-  # Check if any of the required variables are not set
   if [[ -z "$INFISICAL_CLIENT_ID" || -z "$INFISICAL_CLIENT_SECRET" || -z "$INFISICAL_PROJECT_ID" ]]; then
     echo -e "${YELLOW}${BOLD}${UNDERLINE} Infiscal Credentials${NC}"
     echo -e "${LIGHT_FONT}${DARK_GRAY}For more information, visit: https://infisical.com/docs/documentation/platform/identities/machine-identities${NC}"
