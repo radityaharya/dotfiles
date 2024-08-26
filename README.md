@@ -12,6 +12,12 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
 ├── config
 │   ├── atuin
 │   │   └── config.toml
+│   ├── infisical
+│   │   ├── example-agent.yaml
+│   │   ├── example-infisical-agent.service
+│   │   ├── example-template
+│   │   ├── global-env-template
+│   │   ├── install-service.sh
 │   └── nvim
 │       ├── init.lua
 │       ├── lazy-lock.json
@@ -52,6 +58,6 @@ bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
     ├── tpm.zsh
     └── zinit.zsh
 
-12 directories, 32 files
+13 directories, 42 files
 ```
 ---
