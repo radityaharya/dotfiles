@@ -1,0 +1,9 @@
+# syncthing
+.stfolder
+
+# Infisical
+config/infisical/*
+!config/infisical/example*
+!config/infisical/install-service.sh
+
+

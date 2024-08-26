@@ -1,0 +1,15 @@
+[Unit]
+Description=Infiscal Agent
+AssertPathIsDirectory=/home/username/.config/infisical
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/linuxbrew/.linuxbrew/bin/infisical agent --config /home/username/.config/infisical/agent.yaml
+Restart=always
+RestartSec=10
+User=username
+Group=username
+
+[Install]
+WantedBy=default.target

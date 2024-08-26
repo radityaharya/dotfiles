@@ -1,0 +1,21 @@
+infisical:
+  address: "https://app.infisical.com"
+auth:
+  type: "universal-auth"
+  config:
+    client-id: "/home/username/.config/infisical/client_id"
+    client-secret: "/home/username/.config/infisical/client_secret"
+    remove_client_secret_on_read: false
+sinks:
+  - type: "file"
+    config:
+      path: "/home/username/.config/infisical/token"
+
+templates:
+  - source-path: /home/username/.config/infisical/global-env-template
+    destination-path: /home/username/.global.env
+    config:
+      polling-interval: 60s
+      execute:
+        timeout: 30
+        command: ./reload-app.sh

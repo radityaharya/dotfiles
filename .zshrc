@@ -16,6 +16,22 @@ if [ -f "$HOME/.env" ]; then
   set +a
 fi
 
+if [ -f "$HOME/.global.env" ]; then
+  set -a
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=$(echo "$line" | xargs)
+    if [[ -z "$line" || "$line" =~ ^# ]]; then
+      continue
+    fi
+    if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
+      eval "$line"
+    else
+      echo "Ignoring invalid line: $line"
+    fi
+  done < "$HOME/.global.env"
+  set +a
+fi
+
 if [ -f "/usr/bin/tailscale" ] && [ "$(pgrep tailscaled)" ]; then
   export TAILSCALE_IP=$(tailscale ip -4)
 fi
@@ -57,7 +73,7 @@ source $HOME/dotfiles/zsh/config/zstyle.zsh
 source $HOME/dotfiles/zsh/aliases.zsh
 
 # Infisical
-source $HOME/dotfiles/zsh/infisical.zsh
+# source $HOME/dotfiles/zsh/infisical.zsh
 
 # Functions
 for file in $HOME/dotfiles/zsh/functions/*.zsh; do
