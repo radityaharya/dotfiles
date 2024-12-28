@@ -10,6 +10,9 @@ export BUN_INSTALL="$HOME/.bun"
 export FLYCTL_INSTALL="$HOME/.fly"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 
+autoload -Uz compinit
+compinit
+
 if [ -f "$HOME/.env" ]; then
   set -a
   source $HOME/.env

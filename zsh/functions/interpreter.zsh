@@ -1,7 +1,7 @@
 function oi() {
   local api_base="${OPENAI_BASE_URL}"
   local api_key="${OPENAI_API_KEY}"
-  local model="command-r-plus"
+  local model="${OPENAI_MODEL}"
   local context_window="10000"
   local extra_params=()
   local flags=()
