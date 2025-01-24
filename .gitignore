@@ -6,4 +6,7 @@ config/infisical/*
 !config/infisical/example*
 !config/infisical/install-service.sh
 
-
+# Test artifacts
+test-logs/
+*.log
+.backup.log

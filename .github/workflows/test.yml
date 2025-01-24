@@ -1,0 +1,48 @@
+name: Dotfiles Installation Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Run installation test
+        run: |
+          chmod +x test/test.sh
+          ./test/test.sh
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: |
+            ~/.backup.log
+            ~/backup.log
+            ~/.local/share/zinit/log
+          if-no-files-found: ignore
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down --volumes --remove-orphans

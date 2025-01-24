@@ -1,14 +1,14 @@
 #!/bin/bash
 
 log() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$HOME/backup.log"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >>"$HOME/backup.log"
 }
 
-if ! command -v restic &> /dev/null; then
+if ! command -v restic &>/dev/null; then
   log "restic is not installed. Attempting to install..."
   sudo apt-get update && sudo apt-get install -y restic
 
-  if ! command -v restic &> /dev/null; then
+  if ! command -v restic &>/dev/null; then
     log "Error: restic installation failed."
     exit 1
   else
@@ -16,7 +16,7 @@ if ! command -v restic &> /dev/null; then
   fi
 fi
 
-if ! command -v atuin &> /dev/null; then
+if ! command -v atuin &>/dev/null; then
   log "Error: atuin is not installed."
   exit 1
 fi
@@ -29,7 +29,7 @@ fi
 EXCLUDE_FILE="$HOME/dotfiles/restic/restic_exclude.txt"
 
 # Initialize the Restic repository if it is not already initialized
-if ! restic snapshots --repo "$RESTIC_REPO" --password-file <(atuin kv get repo_pass) &> /dev/null; then
+if ! restic snapshots --repo "$RESTIC_REPO" --password-file <(atuin kv get repo_pass) &>/dev/null; then
   log "Restic repository is not initialized. Initializing..."
   restic init --repo "$RESTIC_REPO" --password-file <(atuin kv get repo_pass)
   if [ $? -eq 0 ]; then

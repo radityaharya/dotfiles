@@ -3,40 +3,37 @@ if ! [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+# Setup Homebrew path and environment
+if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -d "$HOME/.linuxbrew" ]]; then
+  eval "$($HOME/.linuxbrew/bin/brew shellenv)"
 fi
 
-if ! command -v oh-my-posh &> /dev/null; then
-  echo "oh-my-posh not found. Installing..."
-  brew install oh-my-posh
-fi
+# Function to install Homebrew packages
+install_brew_package() {
+  local package=$1
+  if ! command -v $package &>/dev/null; then
+    echo "$package not found. Installing..."
+    brew install $package
+  fi
+}
 
-if ! command -v fzf &> /dev/null; then
-  echo "fzf not found. Installing..."
-  brew install fzf
-fi
+# Install essential packages
+essential_packages=(
+  "oh-my-posh"
+  "fzf"
+  "zoxide"
+  "eza"
+  "bat"
+  "aichat"
+)
 
-if ! command -v zoxide &> /dev/null; then
-  echo "zoxide not found. Installing..."  
-  brew install zoxide
-fi
+for package in "${essential_packages[@]}"; do
+  install_brew_package "$package"
+done
 
-if ! command -v eza &> /dev/null; then
-  echo "eza not found. Installing..."
-  brew install eza
-fi
-
-if ! command -v bat &> /dev/null; then
-  echo "bat not found. Installing..."
-  brew install bat
-fi
-
-if ! command -v aichat &> /dev/null; then
-  echo "aichat not found. Installing..."
-  brew install aichat
-fi
-
+# ...existing commented out packages...
 # if ! command -v glow &> /dev/null; then
 #   echo "glow not found. Installing..."
 #   brew install glow

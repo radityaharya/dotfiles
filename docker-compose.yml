@@ -1,0 +1,30 @@
+services:
+  dotfiles-test:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    volumes:
+      - .:/home/testuser/dotfiles:ro
+    environment:
+      - TERM=xterm-256color
+      - DOTFILES_TEST=1
+      - SHELL=/usr/bin/zsh
+      - PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+    tty: true
+    healthcheck:
+      test: ["CMD", "pidof", "tail", "&&", "pidof", "bash"]
+      interval: 1s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    stop_grace_period: 10s
+    init: true
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+volumes:
+  homebrew:
