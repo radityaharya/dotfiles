@@ -36,7 +36,7 @@
       "{{if eq .Code 0}}p:magenta{{end}}"
     ]
   },
-  "console_title_template": "{{.PWD}}",
+  "console_title_template": "{{ .Env.TAILSCALE_IP | default .HostName }} - {{.PWD}}",
   "pwd": "osc7",
   "blocks": [
     {
@@ -45,14 +45,11 @@
       "overflow": "hide",
       "segments": [
         {
-          "properties": {
-            "cache_duration": "none"
-          },
-          "template": "\uf071",
-          "foreground": "p:diag-warning",
-          "background": "p:none",
           "type": "root",
-          "style": "plain"
+          "style": "plain",
+          "foreground": "p:red",
+          "background": "p:none",
+          "template": "{{ if .Root }}\uf6c4 {{ end }}"
         },
         {
           "properties": {
@@ -111,23 +108,23 @@
             "cache_duration": "none",
             "fetch_stash_count": true,
             "fetch_status": true,
+            "fetch_upstream_icon": true,
             "status_formats": {
-              "Added": "<p:git-added>+%d</>",
-              "Deleted": "<p:git-removed>-%d</> ",
-              "Modified": "<p:git-changed>~%d </> ",
-              "Unmerged": "<p:diag-info>X%d</> ",
-              "Untracked": "<p:diag-warning>?%d</> "
+              "Added": "<p:git-added>\uf457 %d</>",
+              "Deleted": "<p:git-removed>\uf458 %d</> ",
+              "Modified": "<p:git-changed>\uf459 %d</> ",
+              "Unmerged": "<p:diag-info>\uf47f %d</> ",
+              "Untracked": "<p:diag-warning>\uf45c %d</> "
             }
           },
           "type": "git",
           "style": "plain",
           "templates": [
             " <p:special>{{ .HEAD }}</>",
-            "{{ if or (gt .Ahead 0) (gt .Behind 0) }} <p:bright-cyan>{{ .BranchStatus }}</>{{ end }}",
+            "{{ if .BranchStatus }} <p:bright-cyan>{{ .BranchStatus }}</>{{ end }}",
             "{{ if .Working.Changed }} {{ .Working.String }}{{ end }}",
-            "{{ if or (and .Working.Changed .Staging.Changed) (gt .StashCount 0) }}| {{ end }}",
-            "{{ if (gt .Staging.Added 0) }}{{ .Staging.String }}{{ end }}",
-            "{{ if gt .StashCount 0 }}<p:blue>*{{ .StashCount }}</>{{ end }}"
+            "{{ if .Staging.Changed }} {{ .Staging.String }}{{ end }}",
+            "{{ if gt .StashCount 0 }} <p:blue>\uf692 {{ .StashCount }}</>{{ end }}"
           ]
         }
       ]
@@ -137,27 +134,30 @@
       "alignment": "right",
       "segments": [
         {
+          "type": "python",
+          "style": "plain",
+          "foreground": "#4584b6",
           "properties": {
-            "cache_duration": "none",
             "display_mode": "environment",
             "fetch_virtual_env": true,
             "home_enabled": true
           },
-          "template": "\ue235 {{ if .Venv }}({{ .Venv }}){{ end }} ",
-          "type": "python",
-          "style": "plain"
+          "template": "{{ if .Venv }}\ue235 ({{ .Venv }}) {{ end }}"
         },
         {
-          "properties": {
-            "always_enabled": true,
-            "cache_duration": "none",
-            "style": "austin",
-            "threshold": 500
-          },
-          "template": " [{{ .FormattedMs }}]",
-          "foreground": "p:bright-black",
           "type": "executiontime",
-          "style": "plain"
+          "style": "plain",
+          "properties": {
+            "threshold": 250,
+            "style": "austin",
+            "always_enabled": true
+          },
+          "foreground_templates": [
+            "{{ if gt .Ms 60000 }}p:red{{ end }}",
+            "{{ if and (gt .Ms 30000) (le .Ms 60000) }}p:yellow{{ end }}",
+            "{{ if le .Ms 30000 }}p:bright-black{{ end }}"
+          ],
+          "template": "[{{ .FormattedMs }}] "
         }
       ]
     },
