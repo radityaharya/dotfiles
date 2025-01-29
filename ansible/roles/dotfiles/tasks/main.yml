@@ -5,55 +5,62 @@
     state: directory
     mode: "0755"
 
-- name: Check for existing dotfiles
-  ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
-  register: dotfile_stats
-  with_items: "{{ symlink_dotfiles | default([]) }}"
-  failed_when: false
+- name: Handle dotfiles
+  block:
+    - name: Check for existing dotfiles
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/{{ item }}"
+      register: dotfile_stats
+      with_items: "{{ symlink_dotfiles | default([]) }}"
 
-- name: Backup existing dotfiles
-  ansible.builtin.command: mv "{{ ansible_env.HOME }}/{{ item.item }}" "{{ ansible_env.HOME }}/dotfiles_backup_{{ ansible_date_time.epoch }}/"
-  with_items: "{{ dotfile_stats.results | default([]) }}"
-  when: item.stat.exists | default(false)
-  register: backup_dotfiles
-  changed_when: backup_dotfiles.rc == 0
-  failed_when: backup_dotfiles.rc != 0 and "No such file or directory" not in backup_dotfiles.stderr
+    - name: Backup existing dotfiles
+      ansible.builtin.command: mv "{{ ansible_env.HOME }}/{{ item.item }}" "{{ ansible_env.HOME }}/dotfiles_backup_{{ ansible_date_time.epoch }}/"
+      with_items: "{{ dotfile_stats.results | default([]) }}"
+      when: item.stat.exists | default(false)
+      register: backup_dotfiles
+      changed_when: backup_dotfiles.rc == 0
 
-- name: Create symlinks for dotfiles
-  ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/dotfiles/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/{{ item }}"
-    state: link
-    force: true
-  with_items: "{{ symlink_dotfiles | default([]) }}"
-  failed_when: false
+    - name: Create symlinks for dotfiles
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/dotfiles/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        state: link
+        force: true
+      with_items: "{{ symlink_dotfiles | default([]) }}"
+  rescue:
+    - name: Report dotfiles operation failure
+      ansible.builtin.debug:
+        msg: "Failed to process dotfiles. Check permissions and paths."
 
-- name: Ensure .config directory exists
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config"
-    state: directory
-    mode: "0755"
+- name: Handle config directories
+  block:
+    - name: Ensure .config directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config"
+        state: directory
+        mode: "0755"
 
-- name: Check for existing config directories
-  ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.config/{{ item }}"
-  register: config_stats
-  with_items: "{{ config_dirs | default([]) }}"
-  failed_when: false
+    - name: Check for existing config directories
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.config/{{ item }}"
+      register: config_stats
+      with_items: "{{ config_dirs | default([]) }}"
 
-- name: Backup existing config directories
-  ansible.builtin.command: mv "{{ ansible_env.HOME }}/.config/{{ item.item }}" "{{ ansible_env.HOME }}/dotfiles_backup_{{ ansible_date_time.epoch }}/"
-  with_items: "{{ config_stats.results | default([]) }}"
-  when: item.stat.exists | default(false)
-  register: backup_configs
-  changed_when: backup_configs.rc == 0
-  failed_when: backup_configs.rc != 0 and "No such file or directory" not in backup_configs.stderr
+    - name: Backup existing config directories
+      ansible.builtin.command: mv "{{ ansible_env.HOME }}/.config/{{ item.item }}" "{{ ansible_env.HOME }}/dotfiles_backup_{{ ansible_date_time.epoch }}/"
+      with_items: "{{ config_stats.results | default([]) }}"
+      when: item.stat.exists | default(false)
+      register: backup_configs
+      changed_when: backup_configs.rc == 0
 
-- name: Create symlinks for config directories
-  ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/dotfiles/config/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.config/{{ item }}"
-    state: link
-    force: true
-  with_items: "{{ config_dirs }}"
+    - name: Create symlinks for config directories
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/dotfiles/config/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/.config/{{ item }}"
+        state: link
+        force: true
+      with_items: "{{ config_dirs }}"
+  rescue:
+    - name: Report config directory operation failure
+      ansible.builtin.debug:
+        msg: "Failed to process config directories. Check permissions and paths."

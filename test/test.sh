@@ -13,6 +13,6 @@ else
   EXIT_CODE=1
 fi
 
-docker compose down
+docker compose -f test/docker-compose.yml down
 
 exit ${EXIT_CODE:-1}

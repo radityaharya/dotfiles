@@ -1,64 +1,81 @@
 ---
-- name: Ensure Homebrew directories exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: "0755"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-  become: true
-  loop: "{{ homebrew_config.dirs }}"
-
-- name: Download Homebrew installer
-  ansible.builtin.get_url:
-    url: "{{ homebrew_config.installer_url }}"
-    dest: /tmp/brew_installer.sh
-    mode: "0755"
-  when: not ansible_check_mode
+- name: Setup Homebrew directories
+  block:
+    - name: Ensure Homebrew directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+      become: true
+      loop: "{{ homebrew_config.dirs }}"
+  rescue:
+    - name: Report directory creation failure
+      ansible.builtin.debug:
+        msg: "Failed to create Homebrew directories. Check permissions."
 
 - name: Install Homebrew
-  ansible.builtin.shell: |
-    export HOME="{{ ansible_env.HOME }}"
-    export USER="{{ ansible_user_id }}"
-    export HOMEBREW_PREFIX="{{ homebrew_config.paths.prefix }}"
-    export HOMEBREW_REPOSITORY="{{ homebrew_config.paths.repository }}"
-    export PATH="{{ homebrew_config.paths.bin }}:$PATH"
-    export NONINTERACTIVE=1
-    /bin/bash /tmp/brew_installer.sh
-  args:
-    creates: "{{ homebrew_config.paths.bin }}/brew"
-  register: brew_install
-  changed_when: brew_install.rc == 0
-  failed_when: brew_install.rc != 0
+  block:
+    - name: Download Homebrew installer
+      ansible.builtin.get_url:
+        url: "{{ homebrew_config.installer_url }}"
+        dest: /tmp/brew_installer.sh
+        mode: "0755"
+      when: not ansible_check_mode
 
-- name: Add Homebrew to user shell config
-  ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.profile"
-    line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
-    create: true
-    mode: "0644"
-    state: present
+    - name: Run Homebrew installer
+      ansible.builtin.shell: |
+        export HOME="{{ ansible_env.HOME }}"
+        export USER="{{ ansible_user_id }}"
+        export HOMEBREW_PREFIX="{{ homebrew_config.paths.prefix }}"
+        export HOMEBREW_REPOSITORY="{{ homebrew_config.paths.repository }}"
+        export PATH="{{ homebrew_config.paths.bin }}:$PATH"
+        export NONINTERACTIVE=1
+        /bin/bash /tmp/brew_installer.sh
+      args:
+        creates: "{{ homebrew_config.paths.bin }}/brew"
+      register: brew_install
+      changed_when: brew_install.rc == 0
 
-- name: Get list of installed Homebrew packages
-  ansible.builtin.command: "{{ homebrew_config.paths.bin }}/brew list --formula"
-  register: installed_brew_packages
-  changed_when: false
-  environment:
-    PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
+    - name: Add Homebrew to user shell config
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.profile"
+        line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+        create: true
+        mode: "0644"
+        state: present
+  rescue:
+    - name: Report Homebrew installation failure
+      ansible.builtin.debug:
+        msg: "Failed to install Homebrew. Check installation requirements and permissions."
 
-- name: Install and update Homebrew packages
-  community.general.homebrew:
-    name: "{{ item }}"
-    state: present
-    update_homebrew: true
-    path: "{{ homebrew_config.paths.bin }}"
-  environment:
-    PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
-    HOMEBREW_PREFIX: "{{ homebrew_config.paths.prefix }}"
-    HOMEBREW_CELLAR: "{{ homebrew_config.paths.cellar }}"
-    HOMEBREW_REPOSITORY: "{{ homebrew_config.paths.repository }}"
-  loop: "{{ homebrew_config.packages }}"
-  register: brew_install
-  retries: 3
-  delay: 5
-  until: brew_install is success
+- name: Manage Homebrew packages
+  block:
+    - name: Get list of installed Homebrew packages
+      ansible.builtin.command: "{{ homebrew_config.paths.bin }}/brew list --formula"
+      register: installed_brew_packages
+      changed_when: false
+      environment:
+        PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
+
+    - name: Install and update Homebrew packages
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: present
+        update_homebrew: true
+        path: "{{ homebrew_config.paths.bin }}"
+      environment:
+        PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
+        HOMEBREW_PREFIX: "{{ homebrew_config.paths.prefix }}"
+        HOMEBREW_CELLAR: "{{ homebrew_config.paths.cellar }}"
+        HOMEBREW_REPOSITORY: "{{ homebrew_config.paths.repository }}"
+      loop: "{{ homebrew_config.packages }}"
+      register: brew_install
+      retries: 3
+      delay: 5
+      until: brew_install is success
+  rescue:
+    - name: Report package installation failure
+      ansible.builtin.debug:
+        msg: "Failed to install or update Homebrew packages. Check network connection and package availability."
