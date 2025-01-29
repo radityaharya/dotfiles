@@ -96,7 +96,12 @@ main() {
     sudo apt-get update && sudo apt-get install -y git
   fi
 
-  setup_dotfiles
+  if [ -z "$DOTFILES_TEST" ]; then
+    setup_dotfiles
+  else
+    echo -e "${YELLOW}Skipping dotfiles setup...${NC}"
+  fi
+
   install_ansible
   run_ansible
 

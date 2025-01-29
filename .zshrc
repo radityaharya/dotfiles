@@ -51,9 +51,6 @@ source $HOME/dotfiles/zsh/homebrew.zsh
 # Oh-My-Posh
 eval "$(/home/linuxbrew/.linuxbrew/bin/oh-my-posh init zsh --config $HOME/dotfiles/omp.json)"
 
-# Tmux Plugin Manager
-source $HOME/dotfiles/zsh/tpm.zsh
-
 # Zinit and Plugins
 source $HOME/dotfiles/zsh/zinit.zsh
 

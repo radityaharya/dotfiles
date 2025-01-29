@@ -30,7 +30,7 @@ if [ ! -x "/home/testuser/dotfiles/install.sh" ]; then
 fi
 
 cd /home/testuser/dotfiles
-./install.sh || {
+cat install.sh | bash || {
   echo -e "${RED}Install failed with exit code $?${NC}"
   exit 1
 }

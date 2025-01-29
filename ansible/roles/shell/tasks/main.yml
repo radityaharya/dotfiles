@@ -1,9 +1,16 @@
 ---
-- name: Setup Zinit
+- name: Setup Zinit directory
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.local/share/zinit"
     state: directory
     mode: "0755"
+
+- name: Clone Zinit repository
+  ansible.builtin.git:
+    repo: https://github.com/zdharma-continuum/zinit.git
+    dest: "{{ ansible_env.HOME }}/.local/share/zinit/zinit.git"
+    depth: 1
+    version: "{{ zinit_version }}"
 
 - name: Add zsh to /etc/shells
   ansible.builtin.lineinfile:

@@ -1,16 +1,5 @@
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-if [ ! -d "$ZINIT_HOME" ]; then
-  if ! mkdir -p "$(dirname $ZINIT_HOME)" 2>/dev/null; then
-    echo "Error: Could not create zinit directory"
-    return 1
-  fi
-  if ! git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"; then
-    echo "Error: Could not clone zinit repository"
-    return 1
-  fi
-fi
+source "${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git/zinit.zsh"
 
-source "${ZINIT_HOME}/zinit.zsh"
 zinit wait lucid for \
   OMZP::git \
   OMZP::sudo \
