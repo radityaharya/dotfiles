@@ -1,0 +1,27 @@
+---
+- name: Install Node.js development tools
+  block:
+    - name: Install Node.js and Bun via Homebrew
+      community.general.homebrew:
+        name:
+          - node@22
+          - oven-sh/bun/bun
+        state: present
+        path: "{{ homebrew_config.paths.bin }}"
+      environment:
+        PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
+        HOMEBREW_PREFIX: "{{ homebrew_config.paths.prefix }}"
+        HOMEBREW_CELLAR: "{{ homebrew_config.paths.cellar }}"
+        HOMEBREW_REPOSITORY: "{{ homebrew_config.paths.repository }}"
+
+    - name: Install global npm packages
+      community.general.npm:
+        name: "{{ item }}"
+        global: true
+        state: present
+      loop:
+        - pnpm
+  rescue:
+    - name: Report development tools installation failure
+      ansible.builtin.debug:
+        msg: "Failed to install development tools. Check network connection and try again."

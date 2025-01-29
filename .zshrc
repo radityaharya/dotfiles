@@ -2,7 +2,6 @@
 export DONT_PROMPT_WSL_INSTALL=true
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 export GPG_TTY=$(tty)
-export BUN_INSTALL="$HOME/.bun"
 export FLYCTL_INSTALL="$HOME/.fly"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 
@@ -35,7 +34,7 @@ if [ -f "/usr/bin/tailscale" ] && [ "$(pgrep tailscaled)" ]; then
   export TAILSCALE_IP=$(tailscale ip -4)
 fi
 
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:"$HOME/.bun/bin/bun":"$BUN_INSTALL/bin":"$FLYCTL_INSTALL/bin":$PATH:/snap/bin:/usr/lib/postgresql/16/bin:/home/linuxbrew/.linuxbrew/:$HOME/go/bin
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:"$FLYCTL_INSTALL/bin":$PATH:/snap/bin:/usr/lib/postgresql/16/bin:/home/linuxbrew/.linuxbrew/:$HOME/go/bin
 
 if [ ! -d "$HOME/dotfiles" ]; then
   echo "Dotfiles repository not found. Cloning..."
@@ -87,13 +86,12 @@ case ":$PATH:" in
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-eval "$(/home/linuxbrew/.linuxbrew/bin/fzf --zsh)"
+[ -s "/home/linuxbrew/.linuxbrew/bin/bun" ] && source "/home/linuxbrew/.linuxbrew/bin/bun"
+[ -s "/home/linuxbrew/.linuxbrew/bin/bun" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/bun --completion zsh)"
+[ -s "/home/linuxbrew/.linuxbrew/bin/fzf" ] &&
+  eval "$(/home/linuxbrew/.linuxbrew/bin/fzf --zsh)"
 eval "$(/home/linuxbrew/.linuxbrew/bin/zoxide init --cmd cd zsh)"
 [ -s "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 # AiChat
 source $HOME/dotfiles/zsh/aichat.zsh
-
-# bun completions
-[ -s "/home/radityaharya/.bun/_bun" ] && source "/home/radityaharya/.bun/_bun"
