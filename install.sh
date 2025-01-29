@@ -7,6 +7,44 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+banner() {
+  echo -e "${GREEN}
+         ██████   ███  ████                  
+      ███░░███ ░░░  ░░███                  
+     ░███ ░░░  ████  ░███   ██████   █████ 
+    ███████   ░░███  ░███  ███░░███ ███░░  
+   ░░░███░     ░███  ░███ ░███████ ░░█████ 
+     ░███      ░███  ░███ ░███░░░   ░░░░███
+ ██  █████     █████ █████░░██████  ██████ 
+░░  ░░░░░     ░░░░░ ░░░░░  ░░░░░░  ░░░░░░  
+  ${NC}"
+  echo -e "${YELLOW}
+  https://github.com/radityaharya/dotfiles
+  ${NC}"
+}
+
+countdown() {
+  echo -e "${YELLOW}Installation will begin in 5 seconds...${NC}"
+  echo -e "${YELLOW}Press Ctrl+C to cancel${NC}"
+
+  if [ -t 0 ]; then
+    for i in {5..1}; do
+      echo -ne "\r$i "
+      read -t 1 -n 1 key 2>/dev/null || true
+      if [ $? -eq 0 ]; then
+        echo -e "\n${RED}Installation cancelled${NC}"
+        exit 1
+      fi
+    done
+  else
+    for i in {5..1}; do
+      echo -ne "\r$i "
+      sleep 1
+    done
+  fi
+  echo
+}
+
 install_ansible() {
   if ! command -v ansible &>/dev/null; then
     echo -e "${YELLOW}Installing Ansible...${NC}"
@@ -50,13 +88,8 @@ run_ansible() {
 }
 
 main() {
-  if [ ! -f "$0" ]; then
-    TEMP_SCRIPT=$(mktemp)
-    cat >"$TEMP_SCRIPT"
-    chmod +x "$TEMP_SCRIPT"
-    exec "$TEMP_SCRIPT"
-    exit 0
-  fi
+  banner
+  countdown
 
   if ! command -v git &>/dev/null; then
     echo -e "${YELLOW}Installing git...${NC}"
@@ -66,10 +99,6 @@ main() {
   install_ansible
   setup_dotfiles
   run_ansible
-
-  if [ -n "$TEMP_SCRIPT" ] && [ -f "$TEMP_SCRIPT" ]; then
-    rm "$TEMP_SCRIPT"
-  fi
 
   echo -e "${GREEN}Installation complete!${NC}"
 }
