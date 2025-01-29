@@ -45,6 +45,24 @@ countdown() {
   echo
 }
 
+setup_dotfiles() {
+  local dotfiles_dir="$HOME/dotfiles"
+
+  if [ ! -d "$dotfiles_dir" ]; then
+    echo -e "${YELLOW}Cloning dotfiles repository...${NC}"
+    git clone https://github.com/radityaharya/dotfiles "$dotfiles_dir"
+  fi
+
+  cd "$dotfiles_dir"
+
+  if [[ -n "$(git status --porcelain)" ]]; then
+    git stash --include-untracked
+  fi
+  git pull origin main
+
+  echo -e "${GREEN}Dotfiles repository is ready.${NC}"
+}
+
 install_ansible() {
   if ! command -v ansible &>/dev/null; then
     echo -e "${YELLOW}Installing Ansible...${NC}"
@@ -56,29 +74,8 @@ install_ansible() {
   fi
 
   echo -e "${YELLOW}Installing required Ansible collections...${NC}"
-  ansible-galaxy collection install -r "$HOME/dotfiles/ansible/requirements.yml"
+  ansible-galaxy collection install -r "$(pwd)/ansible/requirements.yml"
   echo -e "${GREEN}Ansible collections installed successfully.${NC}"
-}
-
-setup_dotfiles() {
-  local dotfiles_dir="$HOME/dotfiles"
-
-  if [ ! -d "$dotfiles_dir" ]; then
-    echo -e "${YELLOW}Cloning dotfiles repository...${NC}"
-    git clone https://github.com/radityaharya/dotfiles "$dotfiles_dir"
-    cd "$dotfiles_dir"
-  else
-    echo -e "${YELLOW}Updating existing dotfiles repository...${NC}"
-    cd "$dotfiles_dir"
-
-    if [[ -n "$(git status --porcelain)" ]]; then
-      git stash --include-untracked
-    fi
-
-    git pull origin main
-  fi
-
-  echo -e "${GREEN}Dotfiles repository is ready.${NC}"
 }
 
 run_ansible() {
@@ -96,8 +93,8 @@ main() {
     sudo apt-get update && sudo apt-get install -y git
   fi
 
-  install_ansible
   setup_dotfiles
+  install_ansible
   run_ansible
 
   echo -e "${GREEN}Installation complete!${NC}"
