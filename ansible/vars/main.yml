@@ -1,0 +1,54 @@
+---
+homebrew_config:
+  paths:
+    bin: "/home/linuxbrew/.linuxbrew/bin"
+    prefix: "/home/linuxbrew/.linuxbrew"
+    repository: "/home/linuxbrew/.linuxbrew/Homebrew"
+    cellar: "/home/linuxbrew/.linuxbrew/Cellar"
+  dirs:
+    - /home/linuxbrew
+    - /home/linuxbrew/.linuxbrew
+    - /home/linuxbrew/.linuxbrew/Homebrew
+  installer_url: "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+  packages:
+    - oh-my-posh
+    - fzf
+    - zoxide
+    - eza
+    - bat
+    - aichat
+    - ripgrep
+    - fd
+    - jq
+    - yq
+
+shell_paths:
+  - /usr/bin/zsh
+  - /bin/zsh
+
+system_packages:
+  - zsh
+  - git
+  - curl
+  - make
+  - gcc
+  - build-essential
+  - procps
+  - python3
+
+# Configuration directories to be linked
+config_dirs:
+  - atuin
+  - infisical
+  - nvim
+
+# Dotfiles to be linked
+symlink_dotfiles:
+  - .zshrc
+  - .tmux.conf
+
+tpm_config:
+  repo: "https://github.com/tmux-plugins/tpm"
+  version: "v3.1.0"
+  install_path: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+  plugins_path: "{{ ansible_env.HOME }}/.tmux/plugins"

@@ -1,0 +1,59 @@
+---
+- name: Check apt lock using command
+  ansible.builtin.command: lsof /var/lib/dpkg/lock-frontend
+  register: apt_lock_check
+  ignore_errors: true
+  changed_when: false
+  become: true
+
+- name: Wait for apt lock to be released
+  ansible.builtin.pause:
+    seconds: 10
+  when: apt_lock_check.rc == 0
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  register: apt_update
+  retries: 3
+  delay: 5
+  until: apt_update is success
+  async: 300
+  poll: 5
+
+- name: Install python3-apt
+  ansible.builtin.apt:
+    name: python3-apt
+    state: present
+  become: true
+  when: ansible_python_interpreter is defined and 'python3' in ansible_python_interpreter
+
+- name: Check if packages are installed
+  ansible.builtin.package_facts:
+    manager: apt
+  register: pkg_facts
+
+- name: Determine packages to install
+  ansible.builtin.set_fact:
+    packages_to_install: "{{ system_packages | difference(ansible_facts.packages | default([])) }}"
+
+- name: Debug - Show packages to be installed
+  ansible.builtin.debug:
+    msg: "Packages that will be installed: {{ packages_to_install }}"
+  when: packages_to_install | length > 0
+
+- name: Ensure required packages are installed (bulk install)
+  ansible.builtin.apt:
+    name: "{{ packages_to_install }}"
+    state: present
+    install_recommends: true
+    dpkg_options: "force-confnew,force-confdef"
+    update_cache: true
+  become: true
+  register: package_install
+  until: package_install is success
+  retries: 5
+  delay: 10
+  when: packages_to_install | length > 0

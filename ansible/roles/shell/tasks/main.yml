@@ -1,0 +1,30 @@
+---
+- name: Setup Zinit
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/share/zinit"
+    state: directory
+    mode: "0755"
+
+- name: Add zsh to /etc/shells
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ item }}"
+    state: present
+  become: true
+  with_items:
+    - /usr/bin/zsh
+    - /bin/zsh
+
+- name: Change default shell to Zsh
+  ansible.builtin.user:
+    name: "{{ ansible_env.USER }}"
+    shell: /usr/bin/zsh
+  become: true
+  when: ansible_env.SHELL != "/usr/bin/zsh"
+
+- name: Source Zsh configuration
+  ansible.builtin.shell: |
+    export SHELL=/usr/bin/zsh
+    zsh -c 'source ~/.zshrc'
+  changed_when: false
+  failed_when: false

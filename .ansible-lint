@@ -1,0 +1,17 @@
+skip_list:
+  - name[casing]
+  - no-handler
+  - yaml[line-length]
+  - risky-file-permissions
+  - risky-shell-pipe
+  - var-naming[no-role-prefix]
+  - yaml[line-length]
+
+exclude_paths:
+  - .git/
+  - .github/
+  - test/
+
+quiet: true
+
+parseable: true

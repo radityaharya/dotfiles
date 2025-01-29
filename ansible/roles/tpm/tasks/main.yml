@@ -1,0 +1,13 @@
+---
+- name: Check if TPM is installed
+  ansible.builtin.stat:
+    path: "{{ tpm_config.install_path }}/.git"
+  register: tpm_installed
+
+- name: Install TPM
+  ansible.builtin.git:
+    repo: "{{ tpm_config.repo }}"
+    dest: "{{ tpm_config.install_path }}"
+    version: "{{ tpm_config.version }}"
+    depth: 1
+  when: not tpm_installed.stat.exists

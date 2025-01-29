@@ -1,7 +1,3 @@
-set -a
-source $HOME/.env
-set +a
-
 # export QT_SCALE_FACTOR=2
 export DONT_PROMPT_WSL_INSTALL=true
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -31,7 +27,7 @@ if [ -f "$HOME/.global.env" ]; then
     else
       echo "Ignoring invalid line: $line"
     fi
-  done < "$HOME/.global.env"
+  done <"$HOME/.global.env"
   set +a
 fi
 

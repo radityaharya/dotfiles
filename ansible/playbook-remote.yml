@@ -1,0 +1,46 @@
+---
+- name: Configure Remote Development Environment
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - vars/main.yml
+  become: true
+  remote_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
+  tags: always
+
+  pre_tasks:
+    - name: Print progress information
+      ansible.builtin.debug:
+        msg: "Starting configuration of remote host {{ ansible_hostname }}"
+      tags: always
+
+    - name: Ensure required directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0755"
+      loop:
+        - "{{ ansible_env.HOME }}/dotfiles"
+        - "{{ ansible_env.HOME }}/.config"
+
+    - name: Synchronize dotfiles to remote host
+      ansible.posix.synchronize:
+        src: "{{ playbook_dir }}/../"
+        dest: "{{ ansible_env.HOME }}/dotfiles/"
+        delete: true
+        rsync_opts:
+          - "--exclude=.git"
+      become: false
+
+  tasks:
+    - name: Include installation tasks
+      ansible.builtin.include_tasks: tasks/main.yml
+      tags: [install]
+
+  post_tasks:
+    - name: Print completion status
+      ansible.builtin.debug:
+        msg: "Configuration completed successfully on {{ ansible_hostname }}"
+      tags: always

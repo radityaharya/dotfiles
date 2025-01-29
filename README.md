@@ -1,63 +1,20 @@
 # dotfiles
 
-This repository contains my personal dotfiles.
+this repository contains my personal dotfiles.
 
 ```bash
-bash -c "$(curl -fsSL https://gh.radityaharya.com/dotfiles/main/install.sh)"
+curl -sL dot.radityaharya.com | bash
 ```
-## Contents
-```
-.
-├── README.md
-├── config
-│   ├── atuin
-│   │   └── config.toml
-│   ├── infisical
-│   │   ├── example-agent.yaml
-│   │   ├── example-infisical-agent.service
-│   │   ├── example-template
-│   │   ├── global-env-template
-│   │   ├── install-service.sh
-│   └── nvim
-│       ├── init.lua
-│       ├── lazy-lock.json
-│       ├── lazyvim.json
-│       ├── lua
-│       └── stylua.toml
-├── install.sh
-├── omp.json
-├── restic
-│   ├── backup.sh
-│   └── restic_exclude.txt
-├── vscode
-│   └── keybindings.json
-├── zed
-│   └── settings.json
-└── zsh
-    ├── aichat.zsh
-    ├── aliases.zsh
-    ├── atuin.zsh
-    ├── completions
-    │   ├── restic.zsh
-    │   └── tailscale.zsh
-    ├── config
-    │   ├── history.zsh
-    │   └── zstyle.zsh
-    ├── functions
-    │   ├── docker-compose.zsh
-    │   ├── docker.zsh
-    │   ├── gcloud.zsh
-    │   ├── interpreter.zsh
-    │   ├── journalctl.zsh
-    │   ├── python.zsh
-    │   ├── rclone.zsh
-    │   └── tmux.zsh
-    ├── homebrew.zsh
-    ├── infisical.zsh
-    ├── keybindings.zsh
-    ├── tpm.zsh
-    └── zinit.zsh
 
-13 directories, 42 files
-```
----
+## Prerequisites
+
+- Ubuntu/Debian-based system
+- `git`
+- `ansible` (will be installed automatically if missing)
+
+- Environment variables:
+  - `TAILSCALE_KEY` (will be used to authenticate tailscale, skipped if not set)
+
+## Backup
+
+during installation, existing configurations will be automatically backed up. logs can be found at `~/dotfiles_backup_<timestamp>/`.

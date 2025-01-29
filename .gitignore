@@ -10,3 +10,10 @@ config/infisical/*
 test-logs/
 *.log
 .backup.log
+
+.env.test
+
+# Ansible
+.hosts
+!.hosts.example
+*.retry

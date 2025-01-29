@@ -1,0 +1,11 @@
+[remote]
+# Add your remote hosts below, for example:
+# dev ansible_host=dev.example.com ansible_user=username
+# staging ansible_host=staging.example.com ansible_user=username
+# prod ansible_host=prod.example.com ansible_user=username
+
+[local]
+localhost ansible_connection=local
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
