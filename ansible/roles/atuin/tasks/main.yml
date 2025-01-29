@@ -4,39 +4,64 @@
     path: "{{ homebrew_config.paths.bin }}/atuin"
   register: atuin_binary
 
-- name: Check required environment variables
-  ansible.builtin.set_fact:
-    atuin_env_vars:
-      username: "{{ lookup('env', 'ATUIN_USERNAME', default='') }}"
-      password: "{{ lookup('env', 'ATUIN_PASSWORD', default='') }}"
-      key: "{{ lookup('env', 'ATUIN_KEY', default='') }}"
-
-- name: Verify Atuin credentials are available
-  ansible.builtin.assert:
-    that:
-      - atuin_env_vars.username | length > 0
-      - atuin_env_vars.password | length > 0
-      - atuin_env_vars.key | length > 0
-    fail_msg: "Missing required Atuin environment variables"
-    success_msg: "All required Atuin credentials are available"
+- name: Configure and sync Atuin
   when: atuin_binary.stat.exists
-  ignore_errors: true
-  register: credentials_check
+  block:
+    - name: Load and validate Atuin configuration
+      block:
+        - name: Read Atuin config file
+          ansible.builtin.slurp:
+            src: "{{ ansible_env.HOME }}/dotfiles/config/atuin/config.toml"
+          register: atuin_config
 
-- name: Login to Atuin
-  ansible.builtin.command:
-    cmd: atuin login -u "{{ atuin_env_vars.username }}" -p "{{ atuin_env_vars.password }}" -k "{{ atuin_env_vars.key }}"
-  when:
-    - atuin_binary.stat.exists
-    - credentials_check is success
-  register: login_result
-  changed_when: login_result.rc == 0
-  failed_when: false
+        - name: Extract and verify sync_address
+          ansible.builtin.set_fact:
+            atuin_sync_address: "{{ (atuin_config.content | b64decode) | regex_search('sync_address\\s*=\\s*\"(.+)\"', '\\1') | first }}"
+          failed_when: atuin_sync_address is not defined
 
-- name: Sync Atuin history
-  ansible.builtin.command: atuin sync
-  when:
-    - atuin_binary.stat.exists
-    - credentials_check is success
-    - login_result.rc == 0
-  changed_when: false
+    - name: Verify credentials and perform sync
+      block:
+        - name: Set credential variables
+          ansible.builtin.set_fact:
+            atuin_env_vars:
+              username: "{{ lookup('env', 'ATUIN_USERNAME', default='') }}"
+              password: "{{ lookup('env', 'ATUIN_PASSWORD', default='') }}"
+              key: "{{ lookup('env', 'ATUIN_KEY', default='') }}"
+
+        - name: Verify credentials
+          ansible.builtin.assert:
+            that: "{{ item }} | length > 0"
+            fail_msg: "Missing {{ item }} credential"
+          loop:
+            - atuin_env_vars.username
+            - atuin_env_vars.password
+            - atuin_env_vars.key
+
+        - name: Perform login and sync
+          block:
+            - name: Login to Atuin
+              ansible.builtin.command:
+                cmd: atuin login -u "{{ atuin_env_vars.username }}" -p "{{ atuin_env_vars.password }}" -k "{{ atuin_env_vars.key }}"
+              register: login_result
+              changed_when: login_result.rc == 0
+
+            - name: Sync Atuin history
+              ansible.builtin.command: atuin sync
+              when: login_result.rc == 0
+              changed_when: false
+
+            - name: Get Atuin status
+              ansible.builtin.command: atuin status
+              register: atuin_status
+              changed_when: false
+
+            - name: Display Atuin status
+              ansible.builtin.debug:
+                msg:
+                  - "Atuin Status:"
+                  - "Server: {{ atuin_sync_address }}"
+                  - "{{ atuin_status.stdout_lines }}"
+      rescue:
+        - name: Report sync failure
+          ansible.builtin.debug:
+            msg: "Failed to sync Atuin history. Check credentials and connection."
