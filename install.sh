@@ -76,6 +76,9 @@ install_ansible() {
   echo -e "${YELLOW}Installing required Ansible collections...${NC}"
   ansible-galaxy collection install -r "$(pwd)/ansible/requirements.yml"
   echo -e "${GREEN}Ansible collections installed successfully.${NC}"
+  echo -e "${YELLOW}Installing required Ansible roles...${NC}"
+  ansible-galaxy role install -r "$(pwd)/ansible/requirements.yml"
+  echo -e "${GREEN}Ansible roles installed successfully.${NC}"
 }
 
 run_ansible() {
