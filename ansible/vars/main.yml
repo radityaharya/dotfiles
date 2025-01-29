@@ -21,6 +21,7 @@ homebrew_config:
     - fd
     - jq
     - yq
+    - atuin
 
 shell_paths:
   - /usr/bin/zsh

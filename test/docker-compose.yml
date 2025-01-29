@@ -3,6 +3,8 @@ services:
     build:
       context: ..
       dockerfile: test/Dockerfile
+    env_file:
+      - ../.env.test
     volumes:
       - homebrew:/home/linuxbrew/.linuxbrew
     environment:

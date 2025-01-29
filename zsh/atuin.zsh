@@ -1,12 +1,9 @@
-zinit ice as"command" from"gh-r" bpick"atuin-*.tar.gz" mv"atuin*/atuin -> atuin" \
-  atclone"./atuin init zsh > init.zsh; ./atuin gen-completions --shell zsh > _atuin" \
-  atpull"%atclone" src"init.zsh"
-zinit light atuinsh/atuin
+eval "$(atuin init zsh)"
 
 # Source variables if logged in
 if atuin status | grep -q "Username"; then
-  if timeout 2s atuin dotfiles var list > /dev/null 2>&1; then
-    eval "$(timeout 2s atuin dotfiles var list)"
+  if timeout 2s atuin dotfiles var list >/dev/null 2>&1; then
+    eval "$(timeout 2s atuin dotfiles var list | sed 's/=\(.*\)$/="\1"/')"
   else
     echo "Retrieving variables timed out."
   fi

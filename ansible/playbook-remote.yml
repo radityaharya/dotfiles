@@ -34,10 +34,25 @@
           - "--exclude=.git"
       become: false
 
-  tasks:
-    - name: Include installation tasks
-      ansible.builtin.include_tasks: tasks/main.yml
-      tags: [install]
+  roles:
+    - role: system
+      tags: ['system', 'packages']
+    - role: artis3n.tailscale
+      tags: ['tailscale']
+      vars:
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+        tailscale_args: "--ssh"
+      when: (lookup('env', 'TAILSCALE_KEY') is defined) and not (lookup('env', 'DOTFILES_TEST') is defined)
+    - role: homebrew
+      tags: ['homebrew']
+    - role: dotfiles
+      tags: ['dotfiles']
+    - role: shell
+      tags: ['shell']
+    - role: tpm
+      tags: ['tpm']
+    - role: atuin
+      tags: ['atuin']
 
   post_tasks:
     - name: Print completion status

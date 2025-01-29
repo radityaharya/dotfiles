@@ -29,6 +29,8 @@
       tags: ['shell']
     - role: tpm
       tags: ['tpm']
+    - role: atuin
+      tags: ['atuin']
 
   post_tasks:
     - name: Print completion status
