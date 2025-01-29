@@ -86,8 +86,6 @@ case ":$PATH:" in
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-[ -s "/home/linuxbrew/.linuxbrew/bin/bun" ] && source "/home/linuxbrew/.linuxbrew/bin/bun"
-[ -s "/home/linuxbrew/.linuxbrew/bin/bun" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/bun --completion zsh)"
 [ -s "/home/linuxbrew/.linuxbrew/bin/fzf" ] &&
   eval "$(/home/linuxbrew/.linuxbrew/bin/fzf --zsh)"
 eval "$(/home/linuxbrew/.linuxbrew/bin/zoxide init --cmd cd zsh)"

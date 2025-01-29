@@ -1,27 +1,81 @@
 ---
-- name: Install Node.js development tools
+- name: Install development tools
   block:
-    - name: Install Node.js and Bun via Homebrew
-      community.general.homebrew:
-        name:
-          - node@22
-          - oven-sh/bun/bun
-        state: present
-        path: "{{ homebrew_config.paths.bin }}"
-      environment:
-        PATH: "{{ homebrew_config.paths.bin }}:{{ ansible_env.PATH }}"
-        HOMEBREW_PREFIX: "{{ homebrew_config.paths.prefix }}"
-        HOMEBREW_CELLAR: "{{ homebrew_config.paths.cellar }}"
-        HOMEBREW_REPOSITORY: "{{ homebrew_config.paths.repository }}"
+    - name: Configure environment
+      ansible.builtin.set_fact:
+        nvm_dir: "{{ ansible_env.HOME }}/.nvm"
+        nvm_version: "v0.40.1"
+        node_version: "22"
 
-    - name: Install global npm packages
-      community.general.npm:
-        name: "{{ item }}"
-        global: true
-        state: present
-      loop:
-        - pnpm
+    - name: Ensure NVM directory exists
+      ansible.builtin.file:
+        path: "{{ nvm_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download NVM installer
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh"
+        dest: "/tmp/nvm-installer.sh"
+        mode: '0755'
+      when: not ansible_check_mode
+
+    - name: Install NVM
+      ansible.builtin.command: bash /tmp/nvm-installer.sh
+      args:
+        creates: "{{ nvm_dir }}/nvm.sh"
+      changed_when: false
+      register: nvm_install
+
+    - name: Setup Node environment
+      ansible.builtin.shell: |
+        set -o pipefail
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        current_node=$(command -v node || echo '')
+        if [ -z "$current_node" ] || [ "$(node -v | cut -d'v' -f2 | cut -d'.' -f1)" != "{{ node_version }}" ]; then
+          nvm install {{ node_version }}
+          nvm use {{ node_version }}
+          echo "changed"
+        fi
+      args:
+        executable: /bin/bash
+      register: node_setup
+      changed_when: node_setup.stdout is search("changed")
+
+    - name: Setup PNPM
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        if ! command -v pnpm &> /dev/null; then
+          npm install -g pnpm
+          echo "changed"
+        fi
+      args:
+        executable: /bin/bash
+      register: pnpm_install
+      changed_when: pnpm_install.stdout is search("changed")
+
+      # npm install -g bun
+    - name: Install bun
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        if ! command -v bun &> /dev/null; then
+          npm install -g bun
+          echo "changed"
+        fi
+      args:
+        executable: /bin/bash
+      register: bun_install
+      changed_when: bun_install.stdout is search("changed")
+
   rescue:
-    - name: Report development tools installation failure
+    - name: Debug installation failures
       ansible.builtin.debug:
-        msg: "Failed to install development tools. Check network connection and try again."
+        msg: |
+          Installation failed:
+          NVM: {{ nvm_install.failed | default(false) }}
+          Node: {{ node_setup.failed | default(false) }}
+          PNPM: {{ pnpm_install.failed | default(false) }}
+          Bun: {{ bun_install.failed | default(false) }}
