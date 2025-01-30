@@ -1,7 +1,34 @@
+set -o emacs
+unsetopt BEEP
+
+bindkey '^[' deselect-region
+
 bindkey '^p' history-search-backward
 bindkey '^o' history-search-forward
+bindkey '^a' select-all
+bindkey '^d' deselect-region
 
-# https://stackoverflow.com/questions/5407916/zsh-zle-shift-selection
+deselect-region() {
+    REGION_ACTIVE=0
+    zle reset-prompt
+}
+zle -N deselect-region
+
+select-all() {
+    REGION_ACTIVE=1
+    MARK=0
+    CURSOR=$#BUFFER
+    zle reset-prompt
+}
+zle -N select-all
+
+select-word-and-region() {
+    REGION_ACTIVE=1
+    zle select-word
+}
+zle -N select-word-and-region
+bindkey '\eq' select-word-and-region
+
 r-delregion() {
   if ((REGION_ACTIVE)) then
      zle kill-region
@@ -25,6 +52,42 @@ r-select() {
   shift
   zle $widget_name -- $@
 }
+
+handle-right-arrow() {
+    if ((REGION_ACTIVE)); then
+        REGION_ACTIVE=0
+        zle reset-prompt
+    else
+        zle autosuggest-accept || zle forward-char
+    fi
+}
+zle -N handle-right-arrow
+
+handle-left-arrow() {
+    if ((REGION_ACTIVE)); then
+        REGION_ACTIVE=0
+        zle reset-prompt
+    fi
+    zle backward-char
+}
+zle -N handle-left-arrow
+
+handle-up-arrow() {
+    REGION_ACTIVE=0
+    zle up-line-or-history
+}
+zle -N handle-up-arrow
+
+handle-down-arrow() {
+    REGION_ACTIVE=0
+    zle down-line-or-history
+}
+zle -N handle-down-arrow
+
+bindkey $'\e[C' handle-right-arrow
+bindkey $'\e[D' handle-left-arrow
+bindkey $'\e[A' handle-up-arrow
+bindkey $'\e[B' handle-down-arrow
 
 for key kcap seq mode widget in \
     sleft   kLFT   $'\e[1;2D' select   backward-char \
