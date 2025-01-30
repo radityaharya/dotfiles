@@ -72,12 +72,12 @@ source $HOME/dotfiles/zsh/aliases.zsh
 
 # Functions
 for file in $HOME/dotfiles/zsh/functions/*.zsh; do
-  source $file
+  [[ $(basename "$file") != _* ]] && source "$file"
 done
 
 # Completions
 for file in $HOME/dotfiles/zsh/completions/*.zsh; do
-  source $file
+  [[ $(basename "$file") != _* ]] && source "$file"
 done
 
 # Sourced Scripts
