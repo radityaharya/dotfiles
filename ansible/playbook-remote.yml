@@ -4,7 +4,6 @@
   gather_facts: true
   vars_files:
     - vars/main.yml
-  become: true
   remote_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
   tags: always
 
@@ -24,6 +23,7 @@
       loop:
         - "{{ ansible_env.HOME }}/dotfiles"
         - "{{ ansible_env.HOME }}/.config"
+      become: true
 
     - name: Synchronize dotfiles to remote host
       ansible.posix.synchronize:
@@ -33,6 +33,7 @@
         rsync_opts:
           - "--exclude=.git"
       become: false
+      delegate_to: localhost
 
   roles:
     - role: system

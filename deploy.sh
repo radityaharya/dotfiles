@@ -16,6 +16,14 @@ function print_usage() {
   echo "  $0 remote -h 'dev,staging' -t 'system,dotfiles'"
 }
 
+function validate_inventory() {
+  if [[ "$1" == "remote" ]] && ! grep -q "\[remote\]" .hosts; then
+    echo "Error: No remote hosts defined in .hosts file"
+    echo "Please add remote hosts under the [remote] section in .hosts"
+    exit 1
+  fi
+}
+
 PLAYBOOK="ansible/playbook.yml"
 VERBOSITY=""
 LIMIT=""
@@ -27,6 +35,8 @@ local)
   ;;
 remote)
   PLAYBOOK="ansible/playbook-remote.yml"
+  validate_inventory "remote"
+  LIMIT=${LIMIT:-"-l remote"}
   ;;
 *)
   print_usage
@@ -57,4 +67,4 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-ansible-playbook $PLAYBOOK $LIMIT $TAGS $VERBOSITY
+ansible-playbook -i .hosts $PLAYBOOK $LIMIT $TAGS $VERBOSITY

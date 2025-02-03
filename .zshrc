@@ -88,8 +88,10 @@ esac
 
 [ -s "/home/linuxbrew/.linuxbrew/bin/fzf" ] &&
   eval "$(/home/linuxbrew/.linuxbrew/bin/fzf --zsh)"
-eval "$(/home/linuxbrew/.linuxbrew/bin/zoxide init --cmd cd zsh)"
 [ -s "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 # AiChat
 source $HOME/dotfiles/zsh/aichat.zsh
+
+# Zoxide
+eval "$(zoxide init zsh)"
