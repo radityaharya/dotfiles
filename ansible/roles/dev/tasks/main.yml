@@ -3,70 +3,50 @@
   block:
     - name: Configure environment
       ansible.builtin.set_fact:
-        nvm_dir: "{{ ansible_env.HOME }}/.nvm"
-        nvm_version: "v0.40.1"
-        node_version: "22"
+        node_version: "23"
 
-    - name: Ensure NVM directory exists
-      ansible.builtin.file:
-        path: "{{ nvm_dir }}"
-        state: directory
-        mode: '0755'
+    - name: Install curl
+      ansible.builtin.apt:
+        name: curl
+        state: present
+      become: true
 
-    - name: Download NVM installer
+    - name: Download NodeSource setup script
       ansible.builtin.get_url:
-        url: "https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh"
-        dest: "/tmp/nvm-installer.sh"
+        url: "https://deb.nodesource.com/setup_{{ node_version }}.x"
+        dest: /tmp/nodesource_setup.sh
         mode: '0755'
       when: not ansible_check_mode
 
-    - name: Install NVM
-      ansible.builtin.command: bash /tmp/nvm-installer.sh
-      args:
-        creates: "{{ nvm_dir }}/nvm.sh"
+    - name: Run NodeSource setup script
+      ansible.builtin.command: bash /tmp/nodesource_setup.sh
+      become: true
       changed_when: false
-      register: nvm_install
+      when: not ansible_check_mode
 
-    - name: Setup Node environment
-      ansible.builtin.shell: |
-        set -o pipefail
-        export NVM_DIR="{{ nvm_dir }}"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        current_node=$(command -v node || echo '')
-        if [ -z "$current_node" ] || [ "$(node -v | cut -d'v' -f2 | cut -d'.' -f1)" != "{{ node_version }}" ]; then
-          nvm install {{ node_version }}
-          nvm use {{ node_version }}
-          echo "changed"
-        fi
-      args:
-        executable: /bin/bash
-      register: node_setup
-      changed_when: node_setup.stdout is search("changed")
+    - name: Install Node.js
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: true
+      become: true
+      register: nodejs_install
 
     - name: Setup PNPM
       ansible.builtin.shell: |
-        export NVM_DIR="{{ nvm_dir }}"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         if ! command -v pnpm &> /dev/null; then
           npm install -g pnpm
           echo "changed"
         fi
-      args:
-        executable: /bin/bash
       register: pnpm_install
       changed_when: pnpm_install.stdout is search("changed")
 
-      # npm install -g bun
     - name: Install bun
       ansible.builtin.shell: |
-        export NVM_DIR="{{ nvm_dir }}"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         if ! command -v bun &> /dev/null; then
           npm install -g bun
           echo "changed"
         fi
-      args:
-        executable: /bin/bash
       register: bun_install
       changed_when: bun_install.stdout is search("changed")
 
@@ -75,7 +55,6 @@
       ansible.builtin.debug:
         msg: |
           Installation failed:
-          NVM: {{ nvm_install.failed | default(false) }}
-          Node: {{ node_setup.failed | default(false) }}
+          Node.js: {{ nodejs_install.failed | default(false) }}
           PNPM: {{ pnpm_install.failed | default(false) }}
           Bun: {{ bun_install.failed | default(false) }}
