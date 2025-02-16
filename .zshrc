@@ -95,3 +95,8 @@ source $HOME/dotfiles/zsh/aichat.zsh
 
 # Zoxide
 eval "$(zoxide init zsh)"
+
+
+#Go
+
+export PATH=$PATH:/usr/local/go/bin
