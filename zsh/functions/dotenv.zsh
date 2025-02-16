@@ -106,5 +106,4 @@ function dotenv {
   "${args[@]}"
 }
 
-# Ensure completion is properly set up
-(($ + functions[compdef])) && compdef _dotenv dotenv
+compdef _dotenv dotenv
