@@ -38,12 +38,12 @@
   roles:
     - role: system
       tags: ['system', 'packages']
-    - role: artis3n.tailscale
-      tags: ['tailscale']
-      vars:
-        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
-        tailscale_args: "--ssh"
-      when: (lookup('env', 'TAILSCALE_KEY') is defined) and not (lookup('env', 'DOTFILES_TEST') is defined)
+    # - role: artis3n.tailscale
+    #   tags: ['tailscale']
+    #   vars:
+    #     tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+    #     tailscale_args: "--ssh"
+    #   when: (lookup('env', 'TAILSCALE_KEY') is defined) and not (lookup('env', 'DOTFILES_TEST') is defined)
     - role: homebrew
       tags: ['homebrew']
     - role: dotfiles

@@ -2,5 +2,5 @@
 collections:
   - name: community.general
 
-roles:
-  - name: artis3n.tailscale
+# roles:
+#   - name: artis3n.tailscale
