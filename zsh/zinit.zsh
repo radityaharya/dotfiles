@@ -17,7 +17,12 @@ zinit wait lucid for \
   blockf \
   zsh-users/zsh-completions \
   atload"!_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions
+  zsh-users/zsh-autosuggestions 
 
 zinit ice wait"0" lucid
 zinit load Aloxaf/fzf-tab
+
+zinit light loiccoyle/zsh-github-copilot
+
+bindkey '^[|' zsh_gh_copilot_explain  # bind Alt+shift+\ to explain
+bindkey '^[\' zsh_gh_copilot_suggest  # bind Alt+\ to suggest
